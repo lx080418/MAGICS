@@ -1851,3 +1851,7 @@ responsive
 
 /* FIX: main banner background */
 .main-banner{background-image:url("../images/heading-bg.jpg") !important;background-size:cover !important;background-position:center !important;min-height:85vh;}
+
+/* FORCE: main banner show background */
+section.main-banner#top{background:url("../images/heading-bg.jpg") center/cover no-repeat !important;min-height:85vh !important;display:block !important;}
+section.main-banner#top:before,section.main-banner#top:after{background:transparent !important;opacity:0 !important;content:none !important;}
