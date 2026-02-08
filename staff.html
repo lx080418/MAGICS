@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Template Mo">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+
+    <title>M.A.G.I.C.S. - Staff</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.png">
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/templatemo-edu-meeting.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" href="assets/css/lightbox.css">
+<!--
+
+TemplateMo 569 Edu Meeting
+
+https://templatemo.com/tm-569-edu-meeting
+
+-->
+  </head>
+
+<body>
+
+   
+
+  <!-- Sub Header -->
+  <div class="sub-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-sm-8">
+          <div class="left-content">
+            <p>M.A.G.I.C.S.™ Official</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-sm-4">
+          <div class="right-icons">
+            <ul>
+              <li><a href="https://www.instagram.com/m.a.g.i.c.s_ngo" target="_blank"><i class="fa fa-instagram"></i></a></li>
+              <li><a href="mailto:lx080418@gmail.com"><i class="fa fa-envelope"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky">
+      <div class="container">
+          <div class="row">
+              <div class="col-12">
+                  <nav class="main-nav">
+                      <!-- ***** Logo Start ***** -->
+                      <a href="index.html" class="logo">
+                          M.A.G.I.C.S.
+                      </a>
+                      <!-- ***** Logo End ***** -->
+                      <!-- ***** Menu Start ***** -->
+                      
+                      <ul class="nav">
+                          <li><a href="index.html">Home</a></li>
+                          <li><a href="lectures.html">Lectures</a></li>
+                      
+                          <li class="has-sub">
+                              <a href="javascript:void(0)" >Partners</a>
+                              <ul class="sub-menu">
+                                  <li><a href="irvine chinese library.html">Irvine Chinese Library</a></li>
+                                  <li><a href="ocsa.html">OCSA</a></li>
+                              </ul>
+                          </li>
+                          <li><a href="index.html">Join Us</a></li>
+                          <li><a href="staff.html" class="active">Staff</a></li> 
+                          <li><a href="game development.html">Game Development</a></li>
+                          <li><a href="contacts.html">Contact</a></li> 
+                      </ul>        
+                      </ul>        
+                      <a class='menu-trigger'>
+                          <span>Menu</span>
+                      </a>
+                      <!-- ***** Menu End ***** -->
+                  </nav>
+              </div>
+          </div>
+      </div>
+  </header>
+  <!-- ***** Header Area End ***** -->
+
+  <section class="heading-page header-text" id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h2>Staff</h2>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="meetings-page" id="meetings">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="filters">
+                <ul>
+                  <li data-filter="*"  class="active">All Staff</li>
+                  <li data-filter=".soon">Longterm Staff</li>
+                  <li data-filter=".imp">Volunteers</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="row grid" id="staffGrid"></div>
+                <script>
+                    //put all staff into a array
+                    const staff = [
+                        ["Jason Li","Founder/President","lx080418@gmail.com","assets/images/jason.jpeg","soon"],
+                        ["Ellie Ji","Social Media","ellieji8887@gmail.com","assets/images/ellie.jpeg","soon"],
+                        ["Jerry Cai","Co-Founder/Web Designer","cjr.greene@gmail.com","assets/images/jerry.jpeg","soon"],
+                        ["Bonnie Zhou","OCSA","bonniezhou0612@gmail.com","assets/images/bonnie.jpeg","soon"],
+                        ["Angelina Lu","Volunteer","angelina.lu2008@gmail.com","assets/images/angie.jpg","imp"],
+                        ["Vincent Li","Co-Founder/Secretary","vincentli20081125@gmail.com","assets/images/vincent.jpeg","soon"],
+                        ["Queenie Xia","Publicity","queeniexia08@gmail.com","assets/images/queenie.jpeg","soon"],
+                        ["Serena Liu","Co-Founder/Course Director","serenaliu6280@gmail.com","assets/images/serena.jpeg","soon"],
+                        ["Richard Chen","Volunteer","pokemonsterop@gmail.com","assets/images/richard.jpeg","imp"],
+                        ["Tammy Gao","Volunteer","gao18945664566@126.com","assets/images/tammy.jpeg","imp"],
+                        ["Alice Zhang","Volunteer","zhangyoutian118@gmail.com","assets/images/alice.jpeg","imp"],
+                        ["Nicolas Kao","Volunteer","nicolas.haoqian.kao@outlook.com","assets/images/nicolas.jpeg","imp"],
+                        ["Siying Chen","Volunteer","chensy_1208@qq.com","assets/images/siying.jpeg","imp"],
+                        ["Yunshu Liu","Volunteer","c1913_lys0729@qq.com","assets/images/yunshu.jpeg","imp"],
+                        ["Haiyin Guo","Volunteer","zhuting@cts-yn.com","assets/images/haiyin.jpeg","imp"],
+                        ["Xintong Yao","Volunteer","xixieluohua@163.com","assets/images/xintong.jpeg","imp"],
+                        ["Edon Deng","Volunteer","edondeng1230@gmail.com","assets/images/edon.jpeg","imp"],
+                        ["Quincy Stokes","Game Development","quincy.f.stokes@gmail.com","assets/images/quincy.jpeg","soon"],
+                        ["Michelle Hui","Web Developer","26huimichelle@gmail.com","assets/images/michelle.jpg","soon"],
+                        ["Minseo Lim","Game Development","readbug.lim@gmail.com","assets/images/min.jpg","soon"],
+                        ["Gehua Wen","Volunteer","wengehua930@gmail.com","assets/images/gehua.jpeg","imp"],
+                        ["Jerry Ye","Web Designer","leeyang2077@gmail.com","assets/images/Jerry_Ye.jpg","imp"]
+                    ];
+                    //grid is refer to a container who's id is "staffGrid"
+                    const grid = document.getElementById("staffGrid");
+                    //show the staff name, role, email, img, and tag
+                    //Use a map to pair each piece of information
+                    grid.innerHTML = staff.map(([name, role, email, img, tag]) => `
+                    <div class="col-lg-4 templatemo-item-col all ${tag}">
+                      <div class="meeting-item">
+                        <div class="thumb"><img src="${img}" alt=""></div>
+                        <div class="down-content">
+                          <h4>${name}</h4>
+                          <p>${role}<br>${email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  `).join("");
+                </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Copyright © 2025 MATH Magics | All Rights Reserved.</p>
+    </div>
+  </section>
+
+
+  <!-- Scripts -->
+  <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="assets/js/isotope.min.js"></script>
+    <script src="assets/js/owl-carousel.js"></script>
+    <script src="assets/js/lightbox.js"></script>
+    <script src="assets/js/tabs.js"></script>
+    <script src="assets/js/isotope.js"></script>
+    <script src="assets/js/video.js"></script>
+    <script src="assets/js/slick-slider.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script>
+        //according to loftblog tut
+        $('.nav li:first').addClass('active');
+
+        var showSection = function showSection(section, isAnimate) {
+          var
+          direction = section.replace(/#/, ''),
+          reqSection = $('.section').filter('[data-section="' + direction + '"]'),
+          reqSectionPos = reqSection.offset().top - 0;
+
+          if (isAnimate) {
+            $('body, html').animate({
+              scrollTop: reqSectionPos },
+            800);
+          } else {
+            $('body, html').scrollTop(reqSectionPos);
+          }
+
+        };
+
+        var checkSection = function checkSection() {
+          $('.section').each(function () {
+            var
+            $this = $(this),
+            topEdge = $this.offset().top - 80,
+            bottomEdge = topEdge + $this.height(),
+            wScroll = $(window).scrollTop();
+            if (topEdge < wScroll && bottomEdge > wScroll) {
+              var
+              currentId = $this.data('section'),
+              reqLink = $('a').filter('[href*=\\#' + currentId + ']');
+              reqLink.closest('li').addClass('active').
+              siblings().removeClass('active');
+            }
+          });
+        };
+
+        $('.main-menu, .responsive-menu, .scroll-to-section').on('click', 'a', function (e) {
+          e.preventDefault();
+          showSection($(this).attr('href'), true);
+        });
+
+        $(window).scroll(function () {
+          checkSection();
+        });
+    </script>
+</body>
+
+
+  </body>
+
+</html>
