@@ -1848,3 +1848,6 @@ responsive
 
 
 
+
+/* FIX: main banner background */
+.main-banner{background-image:url("../images/heading-bg.jpg") !important;background-size:cover !important;background-position:center !important;min-height:85vh;}
