@@ -4,7 +4,6 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "nodemon --watch my_node_js --ext ts,js,json --exec ts-node my_node_js/index.ts",
     "start": "node dist/index.js"
   },
   "devDependencies": {
