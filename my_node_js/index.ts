@@ -93,5 +93,5 @@ app.post("/api/contact", async (req, res) => {
 });
 
 // listen（Render 会注入 PORT）
-const port = Number(process.env.PORT || 3000);
+const port = Number(process.env.PORT || 10000);
 app.listen(port, () => console.log(`Server listening on ${port}`));
