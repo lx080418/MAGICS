@@ -5,7 +5,8 @@
     "module": "commonjs",
     "target": "es2019",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"
   },
   "include": ["index.ts"],
   "exclude": ["dist", "node_modules"]
