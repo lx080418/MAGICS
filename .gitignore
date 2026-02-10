@@ -2,3 +2,6 @@
 .idea/
 dist
 node_modules
+
+node_modules/
+my_node_js/node_modules/
