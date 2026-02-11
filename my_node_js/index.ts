@@ -1,7 +1,7 @@
+import { volunteerTree } from "./RBT_DATA";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-
 const app = express();
 app.use((req, _res, next) => {
     console.log("INCOMING", req.method, req.url, "commit", process.env.RENDER_GIT_COMMIT);
@@ -34,6 +34,7 @@ app.use(
 // multer：先用 memoryStorage（不落盘）
 const upload = multer({ storage: multer.memoryStorage() });
 
+
 // ===== Google Form entry mapping（你刚刚拿到的）=====
 const ENTRY = {
     fullName: "entry.2005620554",
@@ -56,13 +57,7 @@ const ALLOWED_ROLES = new Set([
 app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
     try {
         const body = (req.body ?? {}) as Record<string, string>;
-
-        const fullName = (body.fullName || "").trim();
-        const preferredName = (body.preferredName || "").trim();
-        const email = (body.email || "").trim();
-        const affiliation = (body.affiliation || "").trim();
-        const imageUrl = (body.imageUrl || "").trim();
-        const role = (body.role || "").trim(); // ✅ 单选
+        const { fullName, preferredName, email, affiliation, imageUrl, role } = body;
 
         if (!fullName || !preferredName || !email) {
             return res.status(400).json({ ok: false, message: "Missing required fields" });
@@ -105,10 +100,20 @@ app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
             redirect: "manual",
         });
 
+
         if (!(resp.ok || resp.status === 302)) {
             const text = await resp.text();
             return res.status(502).json({ ok: false, message: "Google Form submit failed", status: resp.status, detailHead: text.slice(0, 500) });
         }
+        volunteerTree.set(email.trim().toLowerCase(), {
+            fullName,
+            preferredName,
+            email,
+            affiliation: affiliation || "N/A",
+            imageUrl: imageUrl || "N/A",
+            role,
+            createdAt: Date.now(),
+        });
 
         return res.json({ ok: true, status: 200, location: null });
     } catch (e: any) {
