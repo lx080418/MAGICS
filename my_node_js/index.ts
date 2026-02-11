@@ -8,6 +8,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
 // CORS：先放宽，等你有前端正式域名再收紧
 app.use(
     cors({
@@ -36,11 +37,16 @@ const FORM_RESPONSE_URL =
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
 // volunteer: multipart/form-data（支持 photo 但先不存，优先用 imageUrl）
-app.post("/api/google-form/volunteer", upload.single("photo"), async (req, res) => {
+app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
     try {
-        const { fullName, preferredName, email, affiliation, imageUrl } = req.body as Record<string, string>;
-        const roleRaw = (req.body as any).role; // 可能 string 或 string[]
+        const body = (req.body ?? {}) as Record<string, string>;
 
+        const { fullName, preferredName, email, affiliation, imageUrl } = body;
+        const roleRaw = (body as any).role;
+
+        if (!fullName || !preferredName || !email) {
+            return res.status(400).json({ ok: false, message: "Missing required fields" });
+        }
         // 多选 role：允许 string 或数组
         const roles: string[] = Array.isArray(roleRaw)
             ? roleRaw
@@ -93,5 +99,5 @@ app.post("/api/contact", async (req, res) => {
 });
 
 // listen（Render 会注入 PORT）
-const port = Number(process.env.PORT || 10000);
+const port = Number(process.env.PORT || 3000);
 app.listen(port, () => console.log(`Server listening on ${port}`));
