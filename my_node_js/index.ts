@@ -107,14 +107,7 @@ app.post("/api/contact", async (req, res) => {
 // listen（Render 会注入 PORT）
 const port = Number(process.env.PORT || 3000);
 // DEBUG: list routes
-console.log("=== ROUTES ===");
-(app as any)._router?.stack?.forEach((layer: any) => {
-    if (layer.route?.path) {
-        const methods = Object.keys(layer.route.methods).join(",");
-        console.log(methods.toUpperCase(), layer.route.path);
-    }
-});
-console.log("=============");
+
 
 
 app.listen(port, () => console.log(`Server listening on ${port}`));
