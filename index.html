@@ -256,11 +256,18 @@ https://templatemo.com/tm-569-edu-meeting
                                       </select>
 
                                       <!-- 二选一：图片链接 or 上传文件（按 pdf 的建议） -->
-                                      <input id="imageUrl" type="url" placeholder="Image URL (optional)">
-                                      <input id="photo" name="photo" type="file" accept="image/*" />
+                                      <input id="imageUrl" type="url" placeholder="Image URL">
+                                     <input id="photo" name="photo" type="file" accept="image/*" class="file-hidden" />
+                                      <button type="button" id="photoBtn" class="main-button-red" style="border:0; cursor:pointer;">
+                                          Upload photo from computer
+                                      </button>
+                                      <span id="photoName" style="margin-left:10px; opacity:.85;">No file selected</span>
+                                      <button type="button" id="pickFromDriveBtn" class="main-button-red" style="border:0; cursor:pointer;">
+                                          Choose from Google Drive
+                                      </button>
 
-                                      <small id="uploadTip" style="opacity:.85; display:block; margin-top:6px;">
-                                          Choose a photo and we’ll upload it and generate a link automatically.
+                                      <small id="uploadTip" style="opacity:.85; display:block; margin-top:6px; font-size: 18px;">
+                                          Choose a photo and we’ll upload it and generate a URL automatically.
                                       </small>
 
                                       <button type="submit" class="main-button-red" style="border:0; cursor:pointer;">
@@ -444,80 +451,11 @@ https://templatemo.com/tm-569-edu-meeting
           checkSection();
         });
     </script>
+
   <script>
-      (function () {
-          const joinUsForm = document.getElementById("joinUsForm");
-          const photoInput = document.getElementById("photo");
-          const imageUrlInput = document.getElementById("imageUrl");
-          const uploadTip = document.getElementById("uploadTip");
-
-// 找到 submit 按钮（你是 <button> 还是 <input> 都能兼容）
-          const submitBtn =
-              joinUsForm.querySelector('button[type="submit"]') ||
-              joinUsForm.querySelector('input[type="submit"]');
-
-// 默认：先禁用（如果你允许不传图片，就别禁用）
-          submitBtn.disabled = true;
-
-          photoInput.addEventListener("change", async () => {
-              const file = photoInput.files?.[0];
-              if (!file) return;
-
-              submitBtn.disabled = true;
-              uploadTip.textContent = "Uploading…";
-
-              try {
-                  const url = await uploadToCloudinary(file); // 这是你 B 步的函数
-                  imageUrlInput.value = url;
-                  uploadTip.textContent = "Uploaded ✅";
-                  submitBtn.disabled = false;
-              } catch (e) {
-                  console.error(e);
-                  uploadTip.textContent = "Upload failed ❌";
-                  submitBtn.disabled = true;
-                  alert("Upload failed: " + (e?.message || "Unknown error"));
-              }
-          });
-
-          joinUsForm.addEventListener("submit", async (e) => {
-              e.preventDefault();
-
-              // 如果你强制必须有图片：
-              if (!imageUrlInput.value.trim()) {
-                  alert("Please upload a photo first.");
-                  return;
-              }
-
-              const fd = new FormData(joinUsForm);
-
-              // 关键：提交时不带文件
-              fd.delete("photo");
-
-              const res = await fetch("https://magics-prvi.onrender.com/api/google-form/volunteer", {
-                  method: "POST",
-                  body: fd,
-              });
-
-              const data = await res.json().catch(() => null);
-              if (!res.ok) {
-                  alert("Submit failed: " + (data?.error || res.statusText));
-                  return;
-              }
-
-              alert("Submitted!");
-              joinUsForm.reset();
-              uploadTip.textContent = "Choose a photo and we’ll generate a link automatically.";
-              submitBtn.disabled = true; // 重置后再次禁用
-          });
-      })();
-  </script>
-  <script>
-      const CLOUD_NAME = "dfjcr4knc";           // 你的 cloud name（可以公开）
-      const UPLOAD_PRESET = "magics_unsigned";  // 你刚创建的 unsigned preset 名
-
-      const photoInput = document.getElementById("photo");
-      const imageUrlInput = document.getElementById("imageUrl");
-      const uploadTip = document.getElementById("uploadTip");
+      // ====== Cloudinary ======
+      const CLOUD_NAME = "dfjcr4knc";
+      const UPLOAD_PRESET = "magics_unsigned";
 
       async function uploadToCloudinary(file) {
           const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
@@ -527,33 +465,162 @@ https://templatemo.com/tm-569-edu-meeting
 
           const res = await fetch(url, { method: "POST", body: form });
           const data = await res.json();
-
-          if (!res.ok) {
-              // Cloudinary 通常会返回 data.error.message
-              const msg = data?.error?.message || "Upload failed";
-              throw new Error(msg);
-          }
-          return data.secure_url; // 这就是可公开访问的图片 URL
+          if (!res.ok) throw new Error(data?.error?.message || "Upload failed");
+          return data.secure_url;
       }
 
-      photoInput?.addEventListener("change", async () => {
+      // ====== DOM ======
+      const joinUsForm = document.getElementById("joinUsForm");
+      const photoInput = document.getElementById("photo");
+      const photoBtn = document.getElementById("photoBtn");
+      const photoName = document.getElementById("photoName");
+      const pickFromDriveBtn = document.getElementById("pickFromDriveBtn");
+      const imageUrlInput = document.getElementById("imageUrl");
+      const uploadTip = document.getElementById("uploadTip");
+      const submitBtn =
+          joinUsForm.querySelector('button[type="submit"]') ||
+          joinUsForm.querySelector('input[type="submit"]');
+
+      function syncSubmitState() {
+          submitBtn.disabled = !imageUrlInput.value.trim();
+      }
+      submitBtn.disabled = true;
+      imageUrlInput.addEventListener("input", syncSubmitState);
+
+      async function handlePickedFile(file) {
+          submitBtn.disabled = true;
+          uploadTip.textContent = "Uploading…";
+          const url = await uploadToCloudinary(file);
+          imageUrlInput.value = url;
+          uploadTip.textContent = "Uploaded ✅ URL added automatically.";
+          syncSubmitState();
+      }
+
+      // ====== 本機上傳按鈕（自訂文字） ======
+      photoBtn.addEventListener("click", () => photoInput.click());
+
+      photoInput.addEventListener("change", async () => {
           const file = photoInput.files?.[0];
+          photoName.textContent = file ? file.name : "No file selected";
           if (!file) return;
 
           try {
-              uploadTip.textContent = "Uploading…";
-              const url = await uploadToCloudinary(file);
-              imageUrlInput.value = url;
-              uploadTip.textContent = "Uploaded ✅ URL added automatically.";
-              alert("Upload success! Image URL has been filled in automatically.");
+              await handlePickedFile(file);
           } catch (e) {
               console.error(e);
-              uploadTip.textContent = "Upload failed. Please try again or paste an Image URL manually.";
+              uploadTip.textContent = "Upload failed ❌";
               alert("Upload failed: " + (e?.message || "Unknown error"));
+              syncSubmitState();
           }
       });
 
+      // ====== 表單送出 ======
+      joinUsForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!imageUrlInput.value.trim()) {
+              alert("Please upload a photo first.");
+              return;
+          }
+
+          const fd = new FormData(joinUsForm);
+          fd.delete("photo"); // 不要把檔案本體再送一次，只送 imageUrl
+
+          const res = await fetch("https://magics-prvi.onrender.com/api/google-form/volunteer", {
+              method: "POST",
+              body: fd,
+          });
+
+          const data = await res.json().catch(() => null);
+          if (!res.ok) return alert("Submit failed: " + (data?.error || res.statusText));
+
+          alert("Submitted!");
+          joinUsForm.reset();
+          photoName.textContent = "No file selected";
+          uploadTip.textContent = "Choose a photo and we’ll upload it and generate a URL automatically.";
+          submitBtn.disabled = true;
+      });
+
+      // ====== Google Drive Picker ======
+      const CLIENT_ID = "1061166808863-5k35g2j68ktugh6f70b9a5qv0cl47ov1.apps.googleusercontent.com";
+      const API_KEY = "AIzaSyDAWak_IwTUCZxHlt7YpLjjJU4SMGNMS1A";
+      const APP_ID = "1061166808863";
+      const SCOPES = "https://www.googleapis.com/auth/drive.readonly";
+
+      let pickerReady = false;
+      let tokenClient;
+      let accessToken = null;
+
+      window.gapiLoaded = function () {
+          gapi.load("picker", () => (pickerReady = true));
+      };
+
+      window.gisLoaded = function () {
+          tokenClient = google.accounts.oauth2.initTokenClient({
+              client_id: CLIENT_ID,
+              scope: SCOPES,
+              callback: (resp) => {
+                  if (resp.error) return alert("Google auth failed");
+                  accessToken = resp.access_token;
+                  showPicker();
+              },
+          });
+      };
+
+      function openDrivePicker() {
+          if (!pickerReady || !tokenClient) return alert("Picker 尚未載入完成，請稍後再試");
+          tokenClient.requestAccessToken({ prompt: accessToken ? "" : "consent" });
+      }
+
+      function showPicker() {
+          const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+              .setMimeTypes("image/png,image/jpeg,image/jpg,image/webp,image/heic");
+
+          const picker = new google.picker.PickerBuilder()
+              .setDeveloperKey(API_KEY)
+              .setAppId(APP_ID)
+              .setOAuthToken(accessToken)
+              .addView(view)
+              .setCallback(pickerCallback)
+              .build();
+
+          picker.setVisible(true);
+      }
+
+      async function pickerCallback(data) {
+          if (data.action !== google.picker.Action.PICKED) return;
+
+          const doc = data[google.picker.Response.DOCUMENTS][0];
+          const fileId = doc[google.picker.Document.ID];
+          const name = doc[google.picker.Document.NAME] || "drive-image";
+          const mimeType = doc[google.picker.Document.MIME_TYPE] || "application/octet-stream";
+
+          const r = await fetch(
+              `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media&supportsAllDrives=true`,
+              { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+          if (!r.ok) return alert("Drive download failed: " + r.status);
+
+          const blob = await r.blob();
+          const file = new File([blob], name, { type: mimeType });
+
+          try {
+              await handlePickedFile(file);
+          } catch (e) {
+              console.error(e);
+              uploadTip.textContent = "Upload failed ❌";
+              alert("Upload failed: " + (e?.message || "Unknown error"));
+              syncSubmitState();
+          }
+      }
+
+      pickFromDriveBtn.addEventListener("click", openDrivePicker);
   </script>
+
+
+
+  <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
 
 </body>
 
