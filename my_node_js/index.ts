@@ -7,6 +7,8 @@ const app = express();
 // 允许 x-www-form-urlencoded（contact form）+ JSON（如果你未来改 fetch）
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.get("/health", (req, res) => res.send("ok-20260211"));
+
 
 
 // CORS：先放宽，等你有前端正式域名再收紧
