@@ -3,6 +3,10 @@ import cors from "cors";
 import multer from "multer";
 
 const app = express();
+app.use((req, _res, next) => {
+    console.log("INCOMING", req.method, req.url, "commit", process.env.RENDER_GIT_COMMIT);
+    next();
+});
 
 // 允许 x-www-form-urlencoded（contact form）+ JSON（如果你未来改 fetch）
 console.log("MAGICS API BOOT ✅ commit:", process.env.RENDER_GIT_COMMIT || "unknown");
@@ -14,10 +18,8 @@ app.use((req, _res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.get("/health", (req, res) => {
-    console.log("HIT /health", new Date().toISOString(), "rid", req.headers["x-request-id"] || "");
-    res.send("ok-20260211");
-});
+app.get("/health-unique-20260211", (_req, res) => res.send("ok-unique-20260211"));
+
 
 
 
