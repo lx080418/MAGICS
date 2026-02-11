@@ -12,6 +12,7 @@ console.log("__dirname:", __dirname);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.get("/health", (req, res) => res.send("ok-20260211"));
+console.log("REGISTERED: GET /health");
 
 
 
@@ -87,6 +88,7 @@ app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
         return res.status(500).json({ ok: false, message: e?.message || "server error" });
     }
 });
+console.log("REGISTERED: POST /api/google-form/volunteer");
 
 // contact：先最小实现（你可以后续转发到另一份 form 或发邮件）
 app.post("/api/contact", async (req, res) => {
