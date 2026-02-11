@@ -242,7 +242,7 @@ https://templatemo.com/tm-569-edu-meeting
                                   Send us a form to reserve a spot at the next lecture (only if you are a new student),
                                   then attend the lecture at the time listed in <a href="lectures.html">Lectures</a>.
                               </p>
-                              <form id="joinUsForm" method="post" enctype="multipart/form-data">
+                              <form id="joinUsForm" method="post">
                               <div style="display:grid; gap:10px; margin-top:12px;">
                                       <input name="fullName" type="text" placeholder="Full Legal Name" required>
                                       <input name="preferredName" type="text" placeholder="Preferred First Name" required>
@@ -251,8 +251,12 @@ https://templatemo.com/tm-569-edu-meeting
                                       <input name="role" type="text" placeholder="Role" required>
 
                                       <!-- 二选一：图片链接 or 上传文件（按 pdf 的建议） -->
-                                      <input name="imageUrl" type="url" placeholder="Image URL (optional)">
-                                      <input name="photo" type="file" accept="image/*">
+                                      <input id="imageUrl" type="url" placeholder="Image URL (optional)">
+                                      <input id="photo" name="photo" type="file" accept="image/*" />
+
+                                      <small id="uploadTip" style="opacity:.85; display:block; margin-top:6px;">
+                                          Choose a photo and we’ll upload it and generate a link automatically.
+                                      </small>
 
                                       <button type="submit" class="main-button-red" style="border:0; cursor:pointer;">
                                           Submit
@@ -437,42 +441,113 @@ https://templatemo.com/tm-569-edu-meeting
     </script>
   <script>
       (function () {
-          const form = document.getElementById('joinUsForm');
-          const msg = document.getElementById('joinUsMsg');
-          if (!form) return;
+          const joinUsForm = document.getElementById("joinUsForm");
+          const photoInput = document.getElementById("photo");
+          const imageUrlInput = document.getElementById("imageUrl");
+          const uploadTip = document.getElementById("uploadTip");
 
-          form.addEventListener('submit', async (e) => {
-              e.preventDefault();
+// 找到 submit 按钮（你是 <button> 还是 <input> 都能兼容）
+          const submitBtn =
+              joinUsForm.querySelector('button[type="submit"]') ||
+              joinUsForm.querySelector('input[type="submit"]');
 
-              msg.textContent = 'Submitting...';
+// 默认：先禁用（如果你允许不传图片，就别禁用）
+          submitBtn.disabled = true;
+
+          photoInput.addEventListener("change", async () => {
+              const file = photoInput.files?.[0];
+              if (!file) return;
+
+              submitBtn.disabled = true;
+              uploadTip.textContent = "Uploading…";
 
               try {
-                  const fd = new FormData(form);
-
-                  // 可选：如果两者都空，给提示（避免空照片）
-                  const imageUrl = (fd.get('imageUrl') || '').toString().trim();
-                  const photo = fd.get('photo');
-                  const hasPhoto = photo && photo instanceof File && photo.size > 0;
-                  if (!imageUrl && !hasPhoto) {
-                      msg.textContent = 'Please provide an Image URL or upload a photo.';
-                      return;
-                  }
-                  const res = await fetch('https://magics-prvi.onrender.com/api/google-form/volunteer', {
-                      method: 'POST',
-                      body: fd
-                  });
-
-                  if (!res.ok) throw new Error(await res.text());
-
-                  msg.textContent = 'Submitted successfully!';
-                  form.reset();
-                  alert('提交成功！');
-              } catch (err) {
-                  msg.textContent = 'Submit failed. Please try again.';
-                  alert('提交失败：' + (err && err.message ? err.message : 'unknown error'));
+                  const url = await uploadToCloudinary(file); // 这是你 B 步的函数
+                  imageUrlInput.value = url;
+                  uploadTip.textContent = "Uploaded ✅";
+                  submitBtn.disabled = false;
+              } catch (e) {
+                  console.error(e);
+                  uploadTip.textContent = "Upload failed ❌";
+                  submitBtn.disabled = true;
+                  alert("Upload failed: " + (e?.message || "Unknown error"));
               }
           });
+
+          joinUsForm.addEventListener("submit", async (e) => {
+              e.preventDefault();
+
+              // 如果你强制必须有图片：
+              if (!imageUrlInput.value.trim()) {
+                  alert("Please upload a photo first.");
+                  return;
+              }
+
+              const fd = new FormData(joinUsForm);
+
+              // 关键：提交时不带文件
+              fd.delete("photo");
+
+              const res = await fetch("https://magics-prvi.onrender.com/api/google-form/volunteer", {
+                  method: "POST",
+                  body: fd,
+              });
+
+              const data = await res.json().catch(() => null);
+              if (!res.ok) {
+                  alert("Submit failed: " + (data?.error || res.statusText));
+                  return;
+              }
+
+              alert("Submitted!");
+              joinUsForm.reset();
+              uploadTip.textContent = "Choose a photo and we’ll generate a link automatically.";
+              submitBtn.disabled = true; // 重置后再次禁用
+          });
       })();
+  </script>
+  <script>
+      const CLOUD_NAME = "dfjcr4knc";           // 你的 cloud name（可以公开）
+      const UPLOAD_PRESET = "magics_unsigned";  // 你刚创建的 unsigned preset 名
+
+      const photoInput = document.getElementById("photo");
+      const imageUrlInput = document.getElementById("imageUrl");
+      const uploadTip = document.getElementById("uploadTip");
+
+      async function uploadToCloudinary(file) {
+          const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+          const form = new FormData();
+          form.append("file", file);
+          form.append("upload_preset", UPLOAD_PRESET);
+
+          const res = await fetch(url, { method: "POST", body: form });
+          const data = await res.json();
+
+          if (!res.ok) {
+              // Cloudinary 通常会返回 data.error.message
+              const msg = data?.error?.message || "Upload failed";
+              throw new Error(msg);
+          }
+          return data.secure_url; // 这就是可公开访问的图片 URL
+      }
+
+      photoInput?.addEventListener("change", async () => {
+          const file = photoInput.files?.[0];
+          if (!file) return;
+
+          try {
+              uploadTip.textContent = "Uploading…";
+              const url = await uploadToCloudinary(file);
+              imageUrlInput.value = url;
+              uploadTip.textContent = "Uploaded ✅ URL added automatically.";
+              alert("Upload success! Image URL has been filled in automatically.");
+          } catch (e) {
+              console.error(e);
+              uploadTip.textContent = "Upload failed. Please try again or paste an Image URL manually.";
+              alert("Upload failed: " + (e?.message || "Unknown error"));
+          }
+      });
+
   </script>
 
 </body>
