@@ -114,12 +114,17 @@ app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
             role,
             createdAt: Date.now(),
         });
-
         return res.json({ ok: true, status: 200, location: null });
     } catch (e: any) {
         return res.status(500).json({ ok: false, message: e?.message || "server error" });
     }
+
 });
+//testing
+app.get("/api/volunteers", (_req, res) => {
+    res.json({ ok: true, data: volunteerTree.entries() });
+});
+
 
 
 // listen（Render 会注入 PORT）

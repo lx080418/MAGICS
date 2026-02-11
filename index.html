@@ -242,8 +242,10 @@ https://templatemo.com/tm-569-edu-meeting
                                   Send us a form to reserve a spot at the next lecture (only if you are a new student),
                                   then attend the lecture at the time listed in <a href="lectures.html">Lectures</a>.
                               </p>
+                              <!---create a form for Join Us page--->
                               <form id="joinUsForm" method="post">
                               <div style="display:grid; gap:10px; margin-top:12px;">
+                                      <!---the input correspond to the google-form: https://forms.gle/PD4axqvvmn2Mw6ue9--->
                                       <input name="fullName" type="text" placeholder="Full Legal Name" required>
                                       <input name="preferredName" type="text" placeholder="Preferred First Name" required>
                                       <input name="email" type="email" placeholder="Email" required>
@@ -255,7 +257,7 @@ https://templatemo.com/tm-569-edu-meeting
                                           <option>Website Designer</option>
                                       </select>
 
-                                      <!-- 二选一：图片链接 or 上传文件（按 pdf 的建议） -->
+                                      <!--upload an image from computer or google-drive-->
                                       <input id="imageUrl"  name="imageUrl" type="url" placeholder="Image URL">
                                      <input id="photo" name="photo" type="file" accept="image/*" class="file-hidden" />
                                       <button type="button" id="photoBtn" class="main-button-red" style="border:0; cursor:pointer;">
@@ -265,7 +267,7 @@ https://templatemo.com/tm-569-edu-meeting
                                       <button type="button" id="pickFromDriveBtn" class="main-button-red" style="border:0; cursor:pointer;">
                                           Choose from Google Drive
                                       </button>
-
+                                      <!--if users don't know how to get an image-URL, tell them we have already considered that.-->
                                       <small id="uploadTip" style="opacity:.85; display:block; margin-top:6px; font-size: 18px;">
                                           Choose a photo and we’ll upload it and generate a URL automatically.
                                       </small>
@@ -405,6 +407,7 @@ https://templatemo.com/tm-569-edu-meeting
     <script src="assets/js/video.js"></script>
     <script src="assets/js/slick-slider.js"></script>
     <script src="assets/js/custom.js"></script>
+    <!--I didn't change anything in here-->
     <script>
         //according to loftblog tut
         $('.nav li:first').addClass('active');
@@ -453,7 +456,7 @@ https://templatemo.com/tm-569-edu-meeting
     </script>
 
   <script>
-      // ====== Cloudinary ======
+      //  We use Cloudinary to get a URL from user images; the user must upload an image for submission.
       const CLOUD_NAME = "dfjcr4knc";
       const UPLOAD_PRESET = "magics_unsigned";
 
@@ -469,7 +472,7 @@ https://templatemo.com/tm-569-edu-meeting
           return data.secure_url;
       }
 
-      // ====== DOM ======
+
       const joinUsForm = document.getElementById("joinUsForm");
       const photoInput = document.getElementById("photo");
       const photoBtn = document.getElementById("photoBtn");
@@ -492,11 +495,10 @@ https://templatemo.com/tm-569-edu-meeting
           uploadTip.textContent = "Uploading…";
           const url = await uploadToCloudinary(file);
           imageUrlInput.value = url;
-          uploadTip.textContent = "Uploaded ✅ URL added automatically.";
+          uploadTip.textContent = "Uploaded URL added automatically.";
           syncSubmitState();
       }
 
-      // ====== 本機上傳按鈕（自訂文字） ======
       photoBtn.addEventListener("click", () => photoInput.click());
 
       photoInput.addEventListener("change", async () => {
@@ -508,13 +510,12 @@ https://templatemo.com/tm-569-edu-meeting
               await handlePickedFile(file);
           } catch (e) {
               console.error(e);
-              uploadTip.textContent = "Upload failed ❌";
+              uploadTip.textContent = "Upload failed";
               alert("Upload failed: " + (e?.message || "Unknown error"));
               syncSubmitState();
           }
       });
 
-      // ====== 表單送出 ======
       joinUsForm.addEventListener("submit", async (e) => {
           e.preventDefault();
           if (!imageUrlInput.value.trim()) {
@@ -523,7 +524,7 @@ https://templatemo.com/tm-569-edu-meeting
           }
 
           const fd = new FormData(joinUsForm);
-          fd.delete("photo"); // 不要把檔案本體再送一次，只送 imageUrl
+          fd.delete("photo");
 
           const res = await fetch("https://magics-prvi.onrender.com/api/google-form/volunteer", {
               method: "POST",
@@ -540,7 +541,8 @@ https://templatemo.com/tm-569-edu-meeting
           submitBtn.disabled = true;
       });
 
-      // ====== Google Drive Picker ======
+      /* Users can upload images from Google Drive; as before, an image must be uploaded for submission, regardless of the method
+       We provided.*/
       const CLIENT_ID = "1061166808863-5k35g2j68ktugh6f70b9a5qv0cl47ov1.apps.googleusercontent.com";
       const API_KEY = "AIzaSyDAWak_IwTUCZxHlt7YpLjjJU4SMGNMS1A";
       const APP_ID = "1061166808863";
@@ -567,7 +569,7 @@ https://templatemo.com/tm-569-edu-meeting
       };
 
       function openDrivePicker() {
-          if (!pickerReady || !tokenClient) return alert("Picker 尚未載入完成，請稍後再試");
+          if (!pickerReady || !tokenClient) return alert("Picker is not ready!, try again later.");
           tokenClient.requestAccessToken({ prompt: accessToken ? "" : "consent" });
       }
 
@@ -607,7 +609,7 @@ https://templatemo.com/tm-569-edu-meeting
               await handlePickedFile(file);
           } catch (e) {
               console.error(e);
-              uploadTip.textContent = "Upload failed ❌";
+              uploadTip.textContent = "Upload failed";
               alert("Upload failed: " + (e?.message || "Unknown error"));
               syncSubmitState();
           }
