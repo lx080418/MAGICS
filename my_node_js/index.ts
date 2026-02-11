@@ -11,8 +11,10 @@ console.log("__dirname:", __dirname);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.get("/health", (req, res) => res.send("ok-20260211"));
-console.log("REGISTERED: GET /health");
+app.get("/health", (req, res) => {
+    console.log("HIT /health", new Date().toISOString(), "rid", req.headers["x-request-id"] || "");
+    res.send("ok-20260211");
+});
 
 
 
