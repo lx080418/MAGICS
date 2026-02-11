@@ -5,6 +5,10 @@ import multer from "multer";
 const app = express();
 
 // 允许 x-www-form-urlencoded（contact form）+ JSON（如果你未来改 fetch）
+console.log("MAGICS API BOOT ✅ commit:", process.env.RENDER_GIT_COMMIT || "unknown");
+console.log("CWD:", process.cwd());
+console.log("__dirname:", __dirname);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.get("/health", (req, res) => res.send("ok-20260211"));
@@ -35,8 +39,6 @@ const ENTRY = {
 const FORM_RESPONSE_URL =
     "https://docs.google.com/forms/d/e/1FAIpQLSfCoJLQEFAw2JOR0f8LFCpG2mpCDIhIiPgftHjtDAKAzLpd5g/formResponse";
 
-// health
-app.get("/health", (_req, res) => res.json({ ok: true }));
 
 // volunteer: multipart/form-data（支持 photo 但先不存，优先用 imageUrl）
 app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
