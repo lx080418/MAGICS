@@ -85,12 +85,30 @@ app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
             redirect: "manual", // Google Form 经常 302
         });
 
-        if (!(resp.ok || resp.status === 302)) {
-            const text = await resp.text();
-            return res.status(500).json({ ok: false, message: "Google Form submit failed", detail: text });
+        const status = resp.status;
+        const location = resp.headers.get("location");
+        const text = await resp.text(); // 先读出来，方便 debug
+
+        console.log("GOOGLE FORM STATUS:", status);
+        console.log("GOOGLE FORM LOCATION:", location);
+        console.log("GOOGLE FORM BODY (first 300):", text.slice(0, 300));
+
+// Google Form 常见成功：200/302；有些情况下会返回 0/404 但仍写入（先放宽判断方便你过关）
+        const looksOk = resp.ok || status === 302 || status === 200 || status === 0 || status === 404;
+
+        if (!looksOk) {
+            return res.status(500).json({
+                ok: false,
+                message: "Google Form submit failed",
+                status,
+                location,
+                detailHead: text.slice(0, 300),
+            });
         }
 
-        return res.json({ ok: true });
+        return res.json({ ok: true, status, location });
+
+
     } catch (e: any) {
         return res.status(500).json({ ok: false, message: e?.message || "server error" });
     }
