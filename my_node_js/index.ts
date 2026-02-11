@@ -12,14 +12,14 @@ app.use((req, _res, next) => {
 console.log("MAGICS API BOOT ✅ commit:", process.env.RENDER_GIT_COMMIT || "unknown");
 console.log("CWD:", process.cwd());
 console.log("__dirname:", __dirname);
-app.use((req, _res, next) => {
-    console.log("INCOMING", req.method, req.url);
-    next();
-});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.get("/health-unique-20260211", (_req, res) => res.send("ok-unique-20260211"));
-
+app.get("/healthz", (_req, res) => res.send("ok"));
+app.get("/healthz", (_req, res) => res.status(200).send("ok"));
+app.get("/health", (_req, res) => res.status(200).send("ok")); // optional
+app.get("/", (_req, res) => res.status(200).send("ok"));       // optional
+app.get("/health-unique-20260211", (_req, res) => res.status(200).send("ok-unique-20260211"));
 
 
 
