@@ -46,88 +46,76 @@ const ENTRY = {
 
 const FORM_RESPONSE_URL =
     "https://docs.google.com/forms/d/e/1FAIpQLSfCoJLQEFAw2JOR0f8LFCpG2mpCDIhIiPgftHjtDAKAzLpd5g/formResponse";
+// 允许的 role（必须和 <option> 文本完全一致）
+const ALLOWED_ROLES = new Set([
+    "General Volunteer",
+    "Class Instructor",
+    "Website Designer",
+]);
 
-
-// volunteer: multipart/form-data（支持 photo 但先不存，优先用 imageUrl）
 app.post("/api/google-form/volunteer", upload.none(), async (req, res) => {
     try {
         const body = (req.body ?? {}) as Record<string, string>;
 
-        const { fullName, preferredName, email, affiliation, imageUrl } = body;
-        const roleRaw = (body as any).role;
+        const fullName = (body.fullName || "").trim();
+        const preferredName = (body.preferredName || "").trim();
+        const email = (body.email || "").trim();
+        const affiliation = (body.affiliation || "").trim();
+        const imageUrl = (body.imageUrl || "").trim();
+        const role = (body.role || "").trim(); // ✅ 单选
 
         if (!fullName || !preferredName || !email) {
             return res.status(400).json({ ok: false, message: "Missing required fields" });
         }
-        // 多选 role：允许 string 或数组
-        const roles: string[] = Array.isArray(roleRaw)
-            ? roleRaw
-            : typeof roleRaw === "string" && roleRaw.trim()
-                ? [roleRaw.trim()]
-                : [];
 
-        // 图片：先用 imageUrl；如果未来要支持 photo，需先上传到云拿 public URL
-        const finalImageUrl = (imageUrl || "").trim();
+        if (!role) {
+            return res.status(400).json({ ok: false, message: "Role is required" });
+        }
+
+        if (!ALLOWED_ROLES.has(role)) {
+            return res.status(400).json({
+                ok: false,
+                message: "Invalid role",
+                allowed: Array.from(ALLOWED_ROLES),
+            });
+        }
 
         const form = new URLSearchParams();
-        form.append(ENTRY.fullName, fullName || "");
-        form.append(ENTRY.preferredName, preferredName || "");
-        form.append(ENTRY.email, email || "");
-        form.append(ENTRY.affiliation, affiliation || "");
-        form.append(ENTRY.imageUrl, finalImageUrl);
+        form.append(ENTRY.fullName, fullName);
+        form.append(ENTRY.preferredName, preferredName);
+        form.append(ENTRY.email, email);
 
-        for (const r of roles) form.append(ENTRY.role, r);
+        // ✅ 这两项：你可选其一策略
+        // 策略A：如果你不想前端必传，就给默认值（避免 Google 因空值拒收）
+        form.append(ENTRY.affiliation, affiliation || "N/A");
+        form.append(ENTRY.imageUrl, imageUrl || "N/A");
+
+        // 策略B：如果你要强制用户填写，把上面两行换成：
+        // if (!affiliation) return res.status(400).json({ ok:false, message:"Affiliation is required" });
+        // if (!imageUrl) return res.status(400).json({ ok:false, message:"ImageUrl is required" });
+        // form.append(ENTRY.affiliation, affiliation);
+        // form.append(ENTRY.imageUrl, imageUrl);
+
+        form.append(ENTRY.role, role);
 
         const resp = await fetch(FORM_RESPONSE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
             body: form.toString(),
-            redirect: "manual", // Google Form 经常 302
+            redirect: "manual",
         });
 
-        const status = resp.status;
-        const location = resp.headers.get("location");
-        const text = await resp.text(); // 先读出来，方便 debug
-
-        console.log("GOOGLE FORM STATUS:", status);
-        console.log("GOOGLE FORM LOCATION:", location);
-        console.log("GOOGLE FORM BODY (first 300):", text.slice(0, 300));
-
-// Google Form 常见成功：200/302；有些情况下会返回 0/404 但仍写入（先放宽判断方便你过关）
-        const looksOk = resp.ok || status === 302 || status === 200 || status === 0 || status === 404;
-
-        if (!looksOk) {
-            return res.status(500).json({
-                ok: false,
-                message: "Google Form submit failed",
-                status,
-                location,
-                detailHead: text.slice(0, 300),
-            });
+        if (!(resp.ok || resp.status === 302)) {
+            const text = await resp.text();
+            return res.status(502).json({ ok: false, message: "Google Form submit failed", status: resp.status, detailHead: text.slice(0, 500) });
         }
 
-        return res.json({ ok: true, status, location });
-
-
+        return res.json({ ok: true, status: 200, location: null });
     } catch (e: any) {
         return res.status(500).json({ ok: false, message: e?.message || "server error" });
     }
 });
-console.log("REGISTERED: POST /api/google-form/volunteer");
 
-// contact：先最小实现（你可以后续转发到另一份 form 或发邮件）
-app.post("/api/contact", async (req, res) => {
-    try {
-        const { name, email, subject, message } = req.body as Record<string, string>;
-        // TODO: 这里你可以：
-        // 1) 转发到 Google Form（另一份表单）
-        // 2) 发邮件（SendGrid/Resend）
-        // 3) 入库
-        return res.json({ ok: true, received: { name, email, subject, message } });
-    } catch (e: any) {
-        return res.status(500).json({ ok: false, message: e?.message || "server error" });
-    }
-});
 
 // listen（Render 会注入 PORT）
 const port = Number(process.env.PORT || 3000);
