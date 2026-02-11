@@ -8,7 +8,10 @@ const app = express();
 console.log("MAGICS API BOOT ✅ commit:", process.env.RENDER_GIT_COMMIT || "unknown");
 console.log("CWD:", process.cwd());
 console.log("__dirname:", __dirname);
-
+app.use((req, _res, next) => {
+    console.log("INCOMING", req.method, req.url);
+    next();
+});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.get("/health", (req, res) => {
