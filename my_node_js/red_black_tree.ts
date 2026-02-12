@@ -26,7 +26,7 @@ class Node<K, V> {
     ) {
         this.key = key;
         this.value = value;
-        this.color = color; // ✅ 修：尊重傳入顏色（Java 版你這裡硬寫 RED 會炸）
+        this.color = color;
         this.left = left;
         this.right = right;
         this.parent = parent;
@@ -42,7 +42,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
     constructor(compare: Comparator<K>) {
         this.compare = compare;
 
-        // ✅ 統一 NIL 哨兵（全樹不使用 null 當葉子）
         const nil = new Node<K, V>(null, null, Color.BLACK, null as any, null as any, null);
         nil.left = nil;
         nil.right = nil;
@@ -51,9 +50,7 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         this.root = this.NIL;
     }
 
-    // ---------------- Public APIs ----------------
 
-    /** 插入或覆蓋；回傳舊值（若不存在則 undefined） */
     set(key: K, value: V): V | undefined {
         if (key === (null as any)) throw new Error("Null key is not allowed");
 
@@ -97,7 +94,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         return this.findNode(key) !== this.NIL;
     }
 
-    /** 刪除；回傳被刪掉的 value（若不存在則 undefined） */
     delete(key: K): V | undefined {
         const z = this.findNode(key);
         if (z === this.NIL) return undefined;
@@ -158,7 +154,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         return { key: m.key as K, value: m.value as V };
     }
 
-    /** <= key 的最大鍵（floor） */
     floor(key: K): RBEntry<K, V> | undefined {
         let cur = this.root;
         let best: Node<K, V> | null = null;
@@ -175,7 +170,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         return best ? { key: best.key as K, value: best.value as V } : undefined;
     }
 
-    /** >= key 的最小鍵（ceil） */
     ceil(key: K): RBEntry<K, V> | undefined {
         let cur = this.root;
         let best: Node<K, V> | null = null;
@@ -206,7 +200,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         return p === this.NIL ? undefined : { key: p.key as K, value: p.value as V };
     }
 
-    /** 中序遍歷（排序後） */
     entries(): RBEntry<K, V>[] {
         const out: RBEntry<K, V>[] = [];
         this.inOrder((k, v) => out.push({ key: k, value: v }));
@@ -225,7 +218,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         return out;
     }
 
-    /** 指定範圍查詢：[lo, hi]（含邊界） */
     range(lo: K, hi: K): RBEntry<K, V>[] {
         const out: RBEntry<K, V>[] = [];
         const dfs = (n: Node<K, V>) => {
@@ -241,12 +233,10 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         return out;
     }
 
-    /** forEach（中序） */
     forEach(fn: (value: V, key: K) => void): void {
         this.inOrder((k, v) => fn(v, k));
     }
 
-    /** Iterable：for..of 直接跑 entries（中序） */
     *[Symbol.iterator](): Iterator<RBEntry<K, V>> {
         const stack: Node<K, V>[] = [];
         let cur = this.root;
@@ -261,7 +251,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         }
     }
 
-    /** 驗證紅黑樹性質（debug 用） */
     validate(): { ok: true } | { ok: false; reason: string } {
         if (this.root === this.NIL) return { ok: true };
         if (this.root.color !== Color.BLACK) return { ok: false, reason: "Root must be BLACK" };
@@ -374,7 +363,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         x.right = y.left;
         if (y.left !== this.NIL) y.left.parent = x;
 
-        // ✅ 修：應該是 y.parent = x.parent（而不是把 x.parent 改掉）
         y.parent = x.parent;
 
         if (x.parent === null) this.root = y;
@@ -391,7 +379,6 @@ export class RedBlackTree<K, V> implements Iterable<RBEntry<K, V>> {
         x.left = y.right;
         if (y.right !== this.NIL) y.right.parent = x;
 
-        // ✅ 修：應該是 y.parent = x.parent
         y.parent = x.parent;
 
         if (x.parent === null) this.root = y;

@@ -7,16 +7,6 @@ app.use((req, _res, next) => {
     console.log("INCOMING", req.method, req.url, "commit", process.env.RENDER_GIT_COMMIT);
     next();
 });
-export default {
-    async fetch(request: Request) {
-        return new Response("OK");
-    },
-};
-
-// 允许 x-www-form-urlencoded（contact form）+ JSON（如果你未来改 fetch）
-console.log("MAGICS API BOOT ✅ commit:", process.env.RENDER_GIT_COMMIT || "unknown");
-console.log("CWD:", process.cwd());
-console.log("__dirname:", __dirname);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.get("/health-unique-20260211", (_req, res) => res.send("ok-unique-20260211"));
@@ -28,13 +18,11 @@ app.get("/health-unique-20260211", (_req, res) => res.status(200).send("ok-uniqu
 
 
 
-// CORS：先放宽，等你有前端正式域名再收紧
-app.use(
-    cors({
-        origin: true,
-        credentials: true,
-    })
-);
+
+app.use(cors({
+    origin: ["https://mathmagics.org", "https://www.mathmagics.org"],
+    credentials: true,
+}));
 
 // multer：先用 memoryStorage（不落盘）
 const upload = multer({ storage: multer.memoryStorage() });
@@ -135,6 +123,45 @@ app.get("/api/volunteers", (_req, res) => {
 // listen（Render 会注入 PORT）
 const port = Number(process.env.PORT || 3000);
 // DEBUG: list routes
+const WORKER_BASE_URL = process.env.WORKER_BASE_URL || "https://magics-math.leeyang2077.workers.dev";
+const MAGICS_API_KEY = process.env.MAGICS_API_KEY || "";
+
+app.get("/api/redis/get", async (req, res) => {
+    try {
+        const key = String(req.query.key || "");
+        if (!key) return res.status(400).json({ ok: false, message: "missing key" });
+
+        const r = await fetch(`${WORKER_BASE_URL}/api/get?key=${encodeURIComponent(key)}`, {
+            headers: { "x-api-key": MAGICS_API_KEY },
+        });
+
+        const text = await r.text();
+        return res.status(r.status).type(r.headers.get("content-type") || "application/json").send(text);
+    } catch (e: any) {
+        return res.status(500).json({ ok: false, message: e?.message || "server error" });
+    }
+});
+
+app.post("/api/redis/set", async (req, res) => {
+    try {
+        const { key, value, ttl } = req.body || {};
+        if (!key) return res.status(400).json({ ok: false, message: "missing key" });
+
+        const r = await fetch(`${WORKER_BASE_URL}/api/set`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": MAGICS_API_KEY,
+            },
+            body: JSON.stringify({ key, value, ttl }),
+        });
+
+        const text = await r.text();
+        return res.status(r.status).type(r.headers.get("content-type") || "application/json").send(text);
+    } catch (e: any) {
+        return res.status(500).json({ ok: false, message: e?.message || "server error" });
+    }
+});
 
 
 

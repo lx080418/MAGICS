@@ -268,7 +268,7 @@ https://templatemo.com/tm-569-edu-meeting
                                           Choose from Google Drive
                                       </button>
                                       <!--if users don't know how to get an image-URL, tell them we have already considered that.-->
-                                      <small id="uploadTip" style="opacity:.85; display:block; margin-top:6px; font-size: 18px;">
+                                      <small id="uploadTip" style="opacity:.85; display:block; margin-top:6px; font-size: 18px; color:floralwhite;">
                                           Choose a photo and we’ll upload it and generate a URL automatically.
                                       </small>
 
@@ -617,8 +617,33 @@ https://templatemo.com/tm-569-edu-meeting
 
       pickFromDriveBtn.addEventListener("click", openDrivePicker);
   </script>
+  <script>
+      const API_BASE = "https://magics-prvi.onrender.com";  // ✅ 改成後端
+      // const API_KEY = ...  // ❌ 刪掉，不要放前端
 
+      async function magicsRedisGet(key) {
+          const url = `${API_BASE}/api/redis/get?key=${encodeURIComponent(key)}`;
+          const res = await fetch(url, { method: "GET" });
 
+          const text = await res.text();
+          if (!res.ok) throw new Error(`GET ${res.status}: ${text}`);
+          return JSON.parse(text);
+      }
+
+      async function magicsRedisSet(key, value, ttl = 60) {
+          const url = `${API_BASE}/api/redis/set`;
+          const res = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key, value, ttl }),
+          });
+
+          const text = await res.text();
+          if (!res.ok) throw new Error(`SET ${res.status}: ${text}`);
+          return JSON.parse(text);
+      }
+
+  </script>
 
   <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
   <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>

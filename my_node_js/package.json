@@ -16,6 +16,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@upstash/redis": "^1.36.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "multer": "^2.0.2"
