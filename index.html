@@ -618,8 +618,8 @@ https://templatemo.com/tm-569-edu-meeting
       pickFromDriveBtn.addEventListener("click", openDrivePicker);
   </script>
   <script>
-      const API_BASE = "https://magics-prvi.onrender.com";  // ✅ 改成後端
-      // const API_KEY = ...  // ❌ 刪掉，不要放前端
+      const API_BASE = "https://magics-prvi.onrender.com";
+
 
       async function magicsRedisGet(key) {
           const url = `${API_BASE}/api/redis/get?key=${encodeURIComponent(key)}`;
@@ -630,18 +630,21 @@ https://templatemo.com/tm-569-edu-meeting
           return JSON.parse(text);
       }
 
-      async function magicsRedisSet(key, value, ttl = 60) {
+      async function magicsRedisSet(key, value, ttl = null) {
           const url = `${API_BASE}/api/redis/set`;
+          const payload = ttl == null ? { key, value } : { key, value, ttl };
+
           const res = await fetch(url, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ key, value, ttl }),
+              body: JSON.stringify(payload),
           });
 
           const text = await res.text();
           if (!res.ok) throw new Error(`SET ${res.status}: ${text}`);
           return JSON.parse(text);
       }
+
 
   </script>
 
