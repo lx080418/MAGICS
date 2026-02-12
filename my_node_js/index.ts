@@ -7,6 +7,11 @@ app.use((req, _res, next) => {
     console.log("INCOMING", req.method, req.url, "commit", process.env.RENDER_GIT_COMMIT);
     next();
 });
+export default {
+    async fetch(request: Request) {
+        return new Response("OK");
+    },
+};
 
 // 允许 x-www-form-urlencoded（contact form）+ JSON（如果你未来改 fetch）
 console.log("MAGICS API BOOT ✅ commit:", process.env.RENDER_GIT_COMMIT || "unknown");
