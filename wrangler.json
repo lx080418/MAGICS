@@ -1,6 +1,6 @@
 {
-  "name": "magics",
-  "main": "my_node_js/index.ts",
+  "name": "magics-math",
+  "main": "my_node_js/cf_worker.ts",
   "compatibility_date": "2026-02-11",
   "compatibility_flags": ["nodejs_compat"]
 }
