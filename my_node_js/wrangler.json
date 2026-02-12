@@ -1,6 +1,6 @@
 {
   "name": "magics",
-  "main": "index.ts",
+  "main": "my_node_js/index.ts",
   "compatibility_date": "2026-02-11",
   "compatibility_flags": ["nodejs_compat"]
 }
