@@ -617,36 +617,6 @@ https://templatemo.com/tm-569-edu-meeting
 
       pickFromDriveBtn.addEventListener("click", openDrivePicker);
   </script>
-  <script>
-      const API_BASE = "https://magics-prvi.onrender.com";
-
-
-      async function magicsRedisGet(key) {
-          const url = `${API_BASE}/api/redis/get?key=${encodeURIComponent(key)}`;
-          const res = await fetch(url, { method: "GET" });
-
-          const text = await res.text();
-          if (!res.ok) throw new Error(`GET ${res.status}: ${text}`);
-          return JSON.parse(text);
-      }
-
-      async function magicsRedisSet(key, value, ttl = null) {
-          const url = `${API_BASE}/api/redis/set`;
-          const payload = ttl == null ? { key, value } : { key, value, ttl };
-
-          const res = await fetch(url, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-          });
-
-          const text = await res.text();
-          if (!res.ok) throw new Error(`SET ${res.status}: ${text}`);
-          return JSON.parse(text);
-      }
-
-
-  </script>
 
   <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
   <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
