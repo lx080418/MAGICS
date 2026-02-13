@@ -203,7 +203,7 @@ async function start() {
 
     app.listen(port, () => console.log(`Server listening on ${port}`));
 }
-//
+
 start().catch((err) => {
     console.error("Failed to start:", err);
     process.exit(1);
