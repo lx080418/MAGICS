@@ -7,9 +7,14 @@ const app = express();
 
 // ===== logger（放最上面）=====
 app.use((req: Request, _res: Response, next: NextFunction) => {
+    const p = req.path; // 不含 query
+    if (req.method === "HEAD") return next();
+    if (p === "/" || p === "/health" || p === "/healthz" || p.startsWith("/health-")) return next();
+
     console.log("INCOMING", req.method, req.url, "commit", process.env.RENDER_GIT_COMMIT);
     next();
 });
+
 
 // ===== CORS（一定要在所有 routes 之前）=====
 const ALLOWED_ORIGINS = new Set([
