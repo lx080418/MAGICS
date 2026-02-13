@@ -34,7 +34,7 @@ const corsOptions: CorsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // preflight
+app.options(/.*/, cors(corsOptions));// preflight
 
 // ===== body parsers =====
 app.use(express.urlencoded({ extended: true }));
