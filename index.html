@@ -525,7 +525,15 @@ https://templatemo.com/tm-569-edu-meeting
 
           const fd = new FormData(joinUsForm);
           fd.delete("photo");
+          // 取值（注意：這些 name 必須跟表單欄位 name 一致）
+          const fullName = (fd.get("fullName") || "").toString().trim();
+          const preferredNameRaw = (fd.get("preferredName") || "").toString().trim();
+          const affiliationRaw = (fd.get("affiliation") || "").toString().trim();
 
+// 補齊後端需要的欄位（避免 400）
+          fd.set("preferredName", preferredNameRaw || fullName);
+          fd.set("affiliation", affiliationRaw || "N/A");
+          fd.set("imageUrl", imageUrlInput.value.trim() || "N/A");
           const res = await fetch("https://magics-math.leeyang2077.workers.dev/api/node/api/google-form/volunteer", {
               method: "POST",
               body: fd,
