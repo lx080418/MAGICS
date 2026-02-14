@@ -31,6 +31,8 @@ const corsOptions: CorsOptions = {
     allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions)); // preflight
 
@@ -171,6 +173,12 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
     } catch (e: any) {
         return res.status(500).json({ ok: false, message: e?.message || "server error" });
     }
+});
+app.post("/api/contact", (req, res) => {
+    // 支持表单(x-www-form-urlencoded)和json
+    const data = Object.keys(req.body || {}).length ? req.body : {};
+    console.log("contact", data);
+    res.status(200).json({ ok: true });
 });
 
 // testing
