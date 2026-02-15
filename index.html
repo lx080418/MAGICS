@@ -518,36 +518,81 @@ https://templatemo.com/tm-569-edu-meeting
 
       joinUsForm.addEventListener("submit", async (e) => {
           e.preventDefault();
+
           if (!imageUrlInput.value.trim()) {
               alert("Please upload a photo first.");
               return;
           }
 
+          // 送出中避免連點
+          submitBtn.disabled = true;
+
           const fd = new FormData(joinUsForm);
           fd.delete("photo");
+
           // 取值（注意：這些 name 必須跟表單欄位 name 一致）
           const fullName = (fd.get("fullName") || "").toString().trim();
           const preferredNameRaw = (fd.get("preferredName") || "").toString().trim();
           const affiliationRaw = (fd.get("affiliation") || "").toString().trim();
 
-// 補齊後端需要的欄位（避免 400）
+          // ✅ 取 email（你的 input name 若不是 "email"，這裡要跟著改）
+          const emailRaw = (fd.get("email") || "").toString().trim();
+          const emailNorm = emailRaw.toLowerCase();
+
+          if (!emailRaw || !emailRaw.includes("@")) {
+              submitBtn.disabled = false;
+              alert("Please enter a valid email.");
+              return;
+          }
+
+          // ✅ 可選：同一瀏覽器/同一裝置直接擋（真的少一次 request，但只限本機）
+          const localKey = `magics_volunteer_submitted:${emailNorm}`;
+          if (localStorage.getItem(localKey) === "1") {
+              submitBtn.disabled = false;
+              alert("This email has already submitted. Please do not submit again.");
+              return;
+          }
+
+          // 補齊後端需要的欄位（避免 400）
           fd.set("preferredName", preferredNameRaw || fullName);
           fd.set("affiliation", affiliationRaw || "N/A");
           fd.set("imageUrl", imageUrlInput.value.trim() || "N/A");
-          const res = await fetch("https://magics-math.leeyang2077.workers.dev/api/node/api/google-form/volunteer", {
-              method: "POST",
-              body: fd,
-          });
 
-          const data = await res.json().catch(() => null);
-          if (!res.ok) return alert("Submit failed: " + (data?.error || res.statusText));
+          try {
+              const res = await fetch(
+                  "https://magics-math.leeyang2077.workers.dev/api/node/api/google-form/volunteer",
+                  { method: "POST", body: fd }
+              );
 
-          alert("Submitted!");
-          joinUsForm.reset();
-          photoName.textContent = "No file selected";
-          uploadTip.textContent = "Choose a photo and we’ll upload it and generate a URL automatically.";
-          submitBtn.disabled = true;
+              const data = await res.json().catch(() => null);
+
+              // ✅ 後端回 409：代表 email 已用過
+              if (res.status === 409) {
+                  localStorage.setItem(localKey, "1"); // 可選：順便把本機也記住
+                  submitBtn.disabled = false;
+                  return alert(data?.error || "This email has already submitted. Please do not submit again.");
+              }
+
+              if (!res.ok) {
+                  submitBtn.disabled = false;
+                  return alert("Submit failed: " + (data?.error || res.statusText));
+              }
+
+              // ✅ 成功：記住這個 email（可選）
+              localStorage.setItem(localKey, "1");
+
+              alert("Submitted!");
+              joinUsForm.reset();
+              photoName.textContent = "No file selected";
+              uploadTip.textContent = "Choose a photo and we’ll upload it and generate a URL automatically.";
+              submitBtn.disabled = true; // reset 後保持 disabled，等使用者再上傳照片
+          } catch (err) {
+              console.error(err);
+              submitBtn.disabled = false;
+              alert("Submit failed: Network error");
+          }
       });
+
 
       /* Users can upload images from Google Drive; as before, an image must be uploaded for submission, regardless of the method
        We provided.*/

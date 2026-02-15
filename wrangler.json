@@ -1,5 +1,15 @@
 {
   "name": "magics-math",
-  "main": "my_node_js/cf_worker.js",
-  "compatibility_date": "2026-02-11"
+  "main": "my_node_js/cf_worker.ts",
+  "compatibility_date": "2026-02-11",
+
+  "durable_objects": {
+    "bindings": [
+      { "name": "RATE_LIMITER", "class_name": "RateLimiterDO" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["RateLimiterDO"] }
+  ]
 }
+
