@@ -8,33 +8,48 @@ type Env = {
     RATE_LIMITER: DurableObjectNamespace;
 };
 
+function json(status: number, obj: unknown) {
+    return new Response(JSON.stringify(obj), {
+        status,
+        headers: { "content-type": "application/json; charset=utf-8" },
+    });
+}
+
 export default {
     async fetch(request: Request, env: Env): Promise<Response> {
         const url = new URL(request.url);
         const origin = request.headers.get("Origin") || "*";
 
+        const withCors = (resp: Response) => {
+            const h = new Headers(resp.headers);
+            h.set("Access-Control-Allow-Origin", origin);
+            h.set("Access-Control-Allow-Credentials", "true");
+            h.append("Vary", "Origin");
+            return new Response(resp.body, { status: resp.status, headers: h });
+        };
+
         // CORS preflight
         if (request.method === "OPTIONS") {
-            return new Response(null, {
-                status: 204,
-                headers: {
-                    "Access-Control-Allow-Origin": origin,
-                    "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-                    "Access-Control-Allow-Headers":
-                        request.headers.get("Access-Control-Request-Headers") || "*",
-                    "Access-Control-Allow-Credentials": "true",
-                },
-            });
+            return withCors(
+                new Response(null, {
+                    status: 204,
+                    headers: {
+                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+                        "Access-Control-Allow-Headers":
+                            request.headers.get("Access-Control-Request-Headers") || "*",
+                        "Access-Control-Max-Age": "86400",
+                    },
+                })
+            );
         }
 
         // ========== ✅ 第一層：IP 限流（只針對 volunteer 的 POST） ==========
         const ip = request.headers.get("cf-connecting-ip") || "0.0.0.0";
         const isVolunteerPost =
-            request.method === "POST" &&
-            url.pathname.includes("/google-form/volunteer");
+            request.method === "POST" && url.pathname.includes("/google-form/volunteer");
 
         if (isVolunteerPost) {
-            // ✅ key 只用 IP（不帶 path）
+            // ✅ key 只用 IP（不要帶 path）
             const id = env.RATE_LIMITER.idFromName(ip);
             const stub = env.RATE_LIMITER.get(id);
 
@@ -44,15 +59,15 @@ export default {
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ windowSec: 60, limit: 10, key: ip }),
             });
-            if (!r1.ok) return new Response("Too Many Requests", { status: 429 });
+            if (!r1.ok) return withCors(json(429, { ok: false, error: "Too Many Requests" }));
 
-            // 規則 2：10 分鐘最多 20 次（可選，建議保留）
+            // 規則 2：10 分鐘最多 20 次（可選）
             const r2 = await stub.fetch("https://rl/check", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ windowSec: 600, limit: 20, key: ip }),
             });
-            if (!r2.ok) return new Response("Too Many Requests", { status: 429 });
+            if (!r2.ok) return withCors(json(429, { ok: false, error: "Too Many Requests" }));
         }
         // ========== ✅ 第一層結束 ==========
 
@@ -67,10 +82,12 @@ export default {
             targetOrigin = env.SPRING_ORIGIN;
             newPath = url.pathname.replace("/api/java", "");
         } else {
-            return new Response("Not Found", { status: 404 });
+            return withCors(json(404, { ok: false, error: "Not Found" }));
         }
 
-        if (!targetOrigin) return new Response("Missing target origin", { status: 500 });
+        if (!targetOrigin) {
+            return withCors(json(500, { ok: false, error: "Missing target origin" }));
+        }
 
         const targetUrl = new URL(targetOrigin);
         const proxyUrl = new URL(request.url);
@@ -81,8 +98,6 @@ export default {
         // 轉發（保留 method/body/headers）
         const cloned = request.clone();
         const upstreamHeaders = new Headers(cloned.headers);
-
-        // 可選：給後端做 gate（後端若沒用到也不影響）
         if (env.WORKER_GATE_KEY) upstreamHeaders.set("x-worker-key", env.WORKER_GATE_KEY);
 
         const method = cloned.method.toUpperCase();
@@ -94,13 +109,7 @@ export default {
         });
 
         const resp = await fetch(upstreamReq);
-
-        // 回傳時加 CORS（給前端用）
-        const headers = new Headers(resp.headers);
-        headers.set("Access-Control-Allow-Origin", origin);
-        headers.set("Access-Control-Allow-Credentials", "true");
-
-        return new Response(resp.body, { status: resp.status, headers });
+        return withCors(resp);
     },
 };
 
@@ -118,9 +127,7 @@ export class RateLimiterDO {
         const limit = body.limit;
         const key = body.key;
 
-        if (!windowSec || !limit || !key) {
-            return new Response("Bad Request", { status: 400 });
-        }
+        if (!windowSec || !limit || !key) return new Response("Bad Request", { status: 400 });
 
         const now = Date.now();
         const storageKey = `${key}:${windowSec}`;
@@ -132,7 +139,7 @@ export class RateLimiterDO {
         if (now > rec.resetAt) rec = { count: 0, resetAt: now + windowSec * 1000 };
 
         rec.count++;
-        // ✅ 加 TTL，避免 storage 長期累積
+
         await this.state.storage.put(storageKey, rec);
 
 

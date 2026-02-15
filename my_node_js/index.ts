@@ -5,13 +5,13 @@ import { MongoClient, ServerApiVersion, Collection } from "mongodb";
 
 const app = express();
 
-// ===== logger（放最上面）=====
+// ===== logger =====
 app.use((req: Request, _res: Response, next: NextFunction) => {
     console.log("INCOMING", req.method, req.url, "commit", process.env.RENDER_GIT_COMMIT);
     next();
 });
 
-// ===== CORS（保留，你直連 Node 測試時有用；走 Worker 時其實不靠它）=====
+// ===== CORS（你主要走 Worker，其實不靠它；保留方便直連測試）=====
 const ALLOWED_ORIGINS = new Set([
     "https://mathmagics.org",
     "https://www.mathmagics.org",
@@ -23,7 +23,7 @@ const ALLOWED_ORIGINS = new Set([
 
 const corsOptions: CorsOptions = {
     origin: (origin, cb) => {
-        if (!origin) return cb(null, true); // curl/postman 沒有 Origin
+        if (!origin) return cb(null, true);
         return cb(null, ALLOWED_ORIGINS.has(origin));
     },
     credentials: false,
@@ -53,7 +53,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 type VolunteerDoc = {
     fullName: string;
     preferredName: string;
-    email: string; // ✅ 這裡存 normalized lower-case
+    email: string;      // 原始 email（顯示用）
+    emailNorm: string;  // trim + lower（唯一鍵）
     affiliation: string;
     imageUrl: string;
     role: string;
@@ -85,17 +86,18 @@ async function initMongo() {
     await mongoClient.connect();
     volunteersCol = mongoClient.db(MONGODB_DB).collection<VolunteerDoc>(MONGODB_COLLECTION);
 
-    // ✅ email 唯一：防止重複提交
+    // ✅ emailNorm 唯一：防止重複提交
     try {
-        await volunteersCol.createIndex({ email: 1 }, { unique: true });
+        await volunteersCol.createIndex({ emailNorm: 1 }, { unique: true });
     } catch (e) {
-        console.warn("createIndex(email unique) failed (maybe duplicates already exist):", e);
+        console.warn("createIndex(emailNorm unique) failed (maybe duplicates already exist):", e);
     }
 
     console.log("Mongo connected:", `${MONGODB_DB}.${MONGODB_COLLECTION}`);
 }
 
 // ===== Google Form entry mapping =====
+// 你如果 entry id 跟這個不同，把這裡換成你自己的
 const ENTRY = {
     fullName: "entry.2005620554",
     preferredName: "entry.1218979286",
@@ -106,9 +108,15 @@ const ENTRY = {
 };
 
 const FORM_RESPONSE_URL =
+    process.env.GOOGLE_FORM_RESPONSE_URL ||
     "https://docs.google.com/forms/d/e/1FAIpQLSfCoJLQEFAw2JOR0f8LFCpG2mpCDIhIiPgftHjtDAKAzLpd5g/formResponse";
 
+// 你前端 drop-down 有哪幾個 role，就跟這裡一致
 const ALLOWED_ROLES = new Set(["General Volunteer", "Class Instructor", "Website Designer"]);
+
+function normEmail(emailRaw: string) {
+    return emailRaw.trim().toLowerCase();
+}
 
 // ===== routes =====
 app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: Response) => {
@@ -138,19 +146,19 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
             });
         }
 
-        const normEmail = emailRaw.toLowerCase();
+        const emailNorm = normEmail(emailRaw);
         const now = Date.now();
 
         // ✅ 0) 先「搶佔」email（原子 upsert）：已存在就直接 409（不再提交 Google Form）
-        let reserved = false;
         try {
             const r = await volunteersCol.updateOne(
-                { email: normEmail },
+                { emailNorm },
                 {
                     $setOnInsert: {
                         fullName,
                         preferredName,
-                        email: normEmail,
+                        email: emailRaw,   // 存原始 email
+                        emailNorm,         // 唯一鍵
                         affiliation,
                         imageUrl,
                         role,
@@ -162,19 +170,12 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
                 { upsert: true }
             );
 
-            reserved = !!r.upsertedCount;
-
-            if (!reserved) {
-                return res
-                    .status(409)
-                    .json({ ok: false, error: "這個 Email 已提交過，請勿重複提交" });
+            if (!r.upsertedCount) {
+                return res.status(409).json({ ok: false, error: "這個 Email 已提交過，請勿重複提交" });
             }
         } catch (e: any) {
-            // duplicate key
             if (e?.code === 11000) {
-                return res
-                    .status(409)
-                    .json({ ok: false, error: "這個 Email 已提交過，請勿重複提交" });
+                return res.status(409).json({ ok: false, error: "這個 Email 已提交過，請勿重複提交" });
             }
             throw e;
         }
@@ -183,7 +184,7 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
         const form = new URLSearchParams();
         form.append(ENTRY.fullName, fullName);
         form.append(ENTRY.preferredName, preferredName);
-        form.append(ENTRY.email, emailRaw); // Google Form 用原始 email（顯示更正常）
+        form.append(ENTRY.email, emailRaw);
         form.append(ENTRY.affiliation, affiliation);
         form.append(ENTRY.imageUrl, imageUrl);
         form.append(ENTRY.role, role);
@@ -196,24 +197,24 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
         });
 
         if (!(resp.ok || resp.status === 302)) {
-            // Google form 失敗：把 reserved 刪掉，讓同 email 可以重試
-            await volunteersCol.deleteOne({ email: normEmail, status: "reserved" as any }).catch(() => {});
+            await volunteersCol.deleteOne({ emailNorm, status: "reserved" }).catch(() => {});
             const text = await resp.text().catch(() => "");
             return res.status(502).json({
                 ok: false,
                 error: "Google Form submit failed",
                 status: resp.status,
-                detailHead: text.slice(0, 500),
+                detailHead: text.slice(0, 300),
             });
         }
 
         // ✅ 2) finalize: 標記 submitted
         await volunteersCol.updateOne(
-            { email: normEmail },
+            { emailNorm },
             {
                 $set: {
                     fullName,
                     preferredName,
+                    email: emailRaw,
                     affiliation,
                     imageUrl,
                     role,
@@ -231,28 +232,7 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
     }
 });
 
-app.post("/api/contact", (req, res) => {
-    const data = Object.keys(req.body || {}).length ? req.body : {};
-    console.log("contact", data);
-    res.status(200).json({ ok: true });
-});
-
-// testing
-app.get("/api/volunteers", async (_req: Request, res: Response) => {
-    try {
-        if (!volunteersCol) return res.status(503).json({ ok: false, error: "DB not ready" });
-        const data = await volunteersCol
-            .find({}, { projection: { _id: 0 } as any })
-            .sort({ createdAt: -1 })
-            .limit(500)
-            .toArray();
-        return res.json({ ok: true, data });
-    } catch (e: any) {
-        return res.status(500).json({ ok: false, error: e?.message || "server error" });
-    }
-});
-
-// ===== listen（Render 會注入 PORT）=====
+// ===== listen =====
 const port = Number(process.env.PORT || 3000);
 
 async function start() {
@@ -265,7 +245,6 @@ start().catch((err) => {
     process.exit(1);
 });
 
-// optional graceful shutdown
 process.on("SIGTERM", async () => {
     try {
         await mongoClient?.close();
