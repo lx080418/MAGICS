@@ -171,11 +171,11 @@ app.post("/api/google-form/volunteer", upload.none(), async (req: Request, res: 
             );
 
             if (!r.upsertedCount) {
-                return res.status(409).json({ ok: false, error: "這個 Email 已提交過，請勿重複提交" });
+                return res.status(409).json({ ok: false, error: "This email has already been submitted; please do not submit it again." });
             }
         } catch (e: any) {
             if (e?.code === 11000) {
-                return res.status(409).json({ ok: false, error: "這個 Email 已提交過，請勿重複提交" });
+                return res.status(409).json({ ok: false, error: "This email has already been submitted; please do not submit it again." });
             }
             throw e;
         }
