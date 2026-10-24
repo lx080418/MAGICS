@@ -302,12 +302,12 @@ header
   transition: all 0.3s ease 0s;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .header-area .main-nav .navbar-logo-image {
-  width: 52px;
-  height: 52px;
+  width: 38px;
+  height: 38px;
   object-fit: cover;
   border-radius: 50%;
   vertical-align: middle;
@@ -318,8 +318,8 @@ header
 }
 
 .background-header .main-nav .navbar-logo-image {
-  width: 46px;
-  height: 46px;
+  width: 34px;
+  height: 34px;
 }
 
 .background-header .nav {
