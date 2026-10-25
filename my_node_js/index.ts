@@ -109,7 +109,7 @@ const ENTRY = {
 
 const FORM_RESPONSE_URL =
     process.env.GOOGLE_FORM_RESPONSE_URL ||
-    "https://docs.google.com/forms/d/e/1FAIpQLSfCoJLQEFAw2JOR0f8LFCpG2mpCDIhIiPgftHjtDAKAzLpd5g/formResponse";
+    "https://script.google.com/macros/s/AKfycbwo7Fl7wPhBoZZrCauu79oUmga0u2yPmgaXQICjAUEJtvOOi5mypzznxtolTUnXNKPr/exec";
 
 // 你前端 drop-down 有哪幾個 role，就跟這裡一致
 const ALLOWED_ROLES = new Set(["General Volunteer", "Class Instructor", "Website Designer"]);
