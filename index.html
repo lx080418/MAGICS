@@ -351,7 +351,8 @@ listed in <a href="lectures.html">Curriculum</a>.
                       type="email"
                       placeholder="Email"
                       required
-                    >`r`n<select name="role" required>
+                    >
+<select name="role" required>
                       <option value="">Select role…</option>
                       <option>General Volunteer</option>
                       <option>Class Instructor</option>
@@ -387,7 +388,9 @@ listed in <a href="lectures.html">Curriculum</a>.
                       style="margin-left: 10px; opacity: 0.85;"
                     >
                       No file selected
-                    </span>`r`n`r`n<button
+                    </span>
+
+<button
                       type="submit"
                       class="main-button-red"
                       style="border: 0; cursor: pointer;"
@@ -695,8 +698,10 @@ listed in <a href="lectures.html">Curriculum</a>.
     const joinUsForm = document.getElementById("joinUsForm");
     const photoInput = document.getElementById("photo");
     const photoBtn = document.getElementById("photoBtn");
-    const photoName = document.getElementById("photoName");`r`nconst imageUrlInput =
-      document.getElementById("imageUrl");`r`nconst submitBtn =
+    const photoName = document.getElementById("photoName");
+const imageUrlInput =
+      document.getElementById("imageUrl");
+const submitBtn =
       joinUsForm.querySelector('button[type="submit"]') ||
       joinUsForm.querySelector('input[type="submit"]');
 
@@ -826,12 +831,7 @@ listed in <a href="lectures.html">Curriculum</a>.
         alert("Submitted!");
 
         joinUsForm.reset();
-        photoName.textContent = "No file selected";
-
-        uploadTip.textContent =
-          "Choose a photo and we’ll upload it and generate a URL automatically.";
-
-        submitBtn.disabled = true;
+        photoName.textContent = "No file selected";`r`nsubmitBtn.disabled = true;
       } catch (err) {
         console.error(err);
         submitBtn.disabled = false;
@@ -970,7 +970,8 @@ listed in <a href="lectures.html">Curriculum</a>.
 
         syncSubmitState();
       }
-    }`r`n</script>
+    }
+</script>
 
   <script
     async
