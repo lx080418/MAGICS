@@ -107,8 +107,10 @@ const ENTRY = {
     role: "entry.1437617207",
 };
 
+// Join Us submissions are appended by the deployed Google Apps Script web app.
+// This is intentionally fixed here so an older GOOGLE_FORM_RESPONSE_URL setting
+// cannot redirect submissions to the previous Google Form.
 const FORM_RESPONSE_URL =
-    process.env.GOOGLE_FORM_RESPONSE_URL ||
     "https://script.google.com/macros/s/AKfycbwo7Fl7wPhBoZZrCauu79oUmga0u2yPmgaXQICjAUEJtvOOi5mypzznxtolTUnXNKPr/exec";
 
 // 你前端 drop-down 有哪幾個 role，就跟這裡一致
