@@ -306,8 +306,8 @@ header
 }
 
 .header-area .main-nav .navbar-logo-image {
-  width: 58px;
-  height: 58px;
+  width: 68px;
+  height: 68px;
   object-fit: cover;
   border-radius: 50%;
   vertical-align: middle;
@@ -320,8 +320,8 @@ header
 }
 
 .background-header .main-nav .navbar-logo-image {
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
 }
 
 .background-header .nav {
