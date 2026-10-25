@@ -831,7 +831,8 @@ const submitBtn =
         alert("Submitted!");
 
         joinUsForm.reset();
-        photoName.textContent = "No file selected";`r`nsubmitBtn.disabled = true;
+        photoName.textContent = "No file selected";
+submitBtn.disabled = true;
       } catch (err) {
         console.error(err);
         submitBtn.disabled = false;
