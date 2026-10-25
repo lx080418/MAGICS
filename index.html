@@ -351,16 +351,7 @@ listed in <a href="lectures.html">Curriculum</a>.
                       type="email"
                       placeholder="Email"
                       required
-                    >
-
-                    <input
-                      name="affiliation"
-                      type="text"
-                      placeholder="Affiliation"
-                      required
-                    >
-
-                    <select name="role" required>
+                    >`r`n<select name="role" required>
                       <option value="">Select role…</option>
                       <option>General Volunteer</option>
                       <option>Class Instructor</option>
@@ -396,32 +387,7 @@ listed in <a href="lectures.html">Curriculum</a>.
                       style="margin-left: 10px; opacity: 0.85;"
                     >
                       No file selected
-                    </span>
-
-                    <button
-                      type="button"
-                      id="pickFromDriveBtn"
-                      class="main-button-red"
-                      style="border: 0; cursor: pointer;"
-                    >
-                      Choose from Google Drive
-                    </button>
-
-                    <small
-                      id="uploadTip"
-                      style="
-                        opacity: 0.85;
-                        display: block;
-                        margin-top: 6px;
-                        font-size: 18px;
-                        color: floralwhite;
-                      "
-                    >
-                      Choose a photo and we’ll upload it and generate a URL
-                      automatically.
-                    </small>
-
-                    <button
+                    </span>`r`n`r`n<button
                       type="submit"
                       class="main-button-red"
                       style="border: 0; cursor: pointer;"
@@ -729,18 +695,8 @@ listed in <a href="lectures.html">Curriculum</a>.
     const joinUsForm = document.getElementById("joinUsForm");
     const photoInput = document.getElementById("photo");
     const photoBtn = document.getElementById("photoBtn");
-    const photoName = document.getElementById("photoName");
-
-    const pickFromDriveBtn =
-      document.getElementById("pickFromDriveBtn");
-
-    const imageUrlInput =
-      document.getElementById("imageUrl");
-
-    const uploadTip =
-      document.getElementById("uploadTip");
-
-    const submitBtn =
+    const photoName = document.getElementById("photoName");`r`nconst imageUrlInput =
+      document.getElementById("imageUrl");`r`nconst submitBtn =
       joinUsForm.querySelector('button[type="submit"]') ||
       joinUsForm.querySelector('input[type="submit"]');
 
@@ -753,12 +709,10 @@ listed in <a href="lectures.html">Curriculum</a>.
 
     async function handlePickedFile(file) {
       submitBtn.disabled = true;
-      uploadTip.textContent = "Uploading…";
 
       const url = await uploadToCloudinary(file);
 
       imageUrlInput.value = url;
-      uploadTip.textContent = "Uploaded URL added automatically.";
 
       syncSubmitState();
     }
@@ -782,7 +736,6 @@ listed in <a href="lectures.html">Curriculum</a>.
         await handlePickedFile(file);
       } catch (e) {
         console.error(e);
-        uploadTip.textContent = "Upload failed";
 
         alert(
           "Upload failed: " +
@@ -1009,7 +962,6 @@ listed in <a href="lectures.html">Curriculum</a>.
         await handlePickedFile(file);
       } catch (e) {
         console.error(e);
-        uploadTip.textContent = "Upload failed";
 
         alert(
           "Upload failed: " +
@@ -1018,13 +970,7 @@ listed in <a href="lectures.html">Curriculum</a>.
 
         syncSubmitState();
       }
-    }
-
-    pickFromDriveBtn.addEventListener(
-      "click",
-      openDrivePicker
-    );
-  </script>
+    }`r`n</script>
 
   <script
     async
