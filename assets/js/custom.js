@@ -28,7 +28,8 @@
           itemSelector: ".all",
           percentPosition: true,
           masonry: {
-            columnWidth: ".all"
+            columnWidth: ".all",
+            horizontalOrder: true
           }
         });
 
