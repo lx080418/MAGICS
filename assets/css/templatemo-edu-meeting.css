@@ -1887,3 +1887,10 @@ section.main-banner#top:before,section.main-banner#top:after{background:transpar
 /* FIX main banner */
 section.main-banner#top{background:url("../images/heading-bg.jpg") center/cover no-repeat !important;min-height:85vh !important;display:block !important;position:relative !important;}
 section.main-banner#top:before,section.main-banner#top:after{content:none !important;opacity:0 !important;background:transparent !important;}
+
+@media (min-width: 992px) {
+  .curriculum-grid-five > .templatemo-item-col {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
