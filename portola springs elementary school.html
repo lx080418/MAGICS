@@ -103,5 +103,46 @@
     <div class="footer"><p>Copyright © 2025 MATH Magics | All Rights Reserved.</p></div>
   </section>
   <script src="vendor/jquery/jquery.min.js"></script><script src="vendor/bootstrap/js/bootstrap.min.js"></script><script src="assets/js/isotope.min.js"></script><script src="assets/js/owl-carousel.js"></script><script src="assets/js/lightbox.js"></script><script src="assets/js/tabs.js"></script><script src="assets/js/isotope.js"></script><script src="assets/js/video.js"></script><script src="assets/js/slick-slider.js"></script><script src="assets/js/custom.js"></script>
+  <script>
+    (function () {
+      const galleries = {
+        'Mean & Median — 10/22/2026': ['mean-median', 7],
+        'Number Property — 10/05/2026': ['number-property', 52],
+        'Odd and Even in Operation — 10/01/2026': ['odd-even-operation', 45],
+        'Probability — 09/21/2026': ['probability', 25],
+        'How Do I Find a Point? — 09/17/2026': ['find-point', 29],
+        'Order of Operation — 01/08/2026': ['order-operation', 11],
+        'Odd and Even — 01/15/2026': ['odd-even', 8],
+        '3D Unfolding — 01/22/2026': ['3d-unfolding', 14],
+        'Distributive Property — 01/29/2026': ['distributive-property', 10],
+        'Area of Common Shapes — 02/05/2026': ['area-common-shapes', 13],
+        'Divisibility — 02/12/2026': ['divisibility', 11],
+        'Game Party — 02/19/2026': ['game-party', 15],
+        'True or False — 02/26/2026': ['true-false', 7],
+        'Guess Numbers — 03/05/2026': ['guess-numbers', 10],
+        'Game Party 2 — 03/12/2026': ['game-party-2', 23],
+        'Game Party 3 — 03/19/2026': ['game-party-3', 9],
+        'Nim Game — 03/26/2026': ['nim-game', 17],
+        'Final Game — 04/09/2026': ['final-game', 11],
+        'Number Property — 04/16/2026': ['number-property-final', 16]
+      };
+      document.querySelectorAll('a[data-lightbox="portola-class-gallery"]').forEach(function (link) {
+        const config = galleries[link.getAttribute('data-title')];
+        if (!config) return;
+        const slug = config[0], count = config[1], group = 'portola-' + slug;
+        link.setAttribute('data-lightbox', group);
+        link.href = 'assets/images/portola/' + slug + '-1.jpg';
+        for (let i = 2; i <= count; i++) {
+          const extra = document.createElement('a');
+          extra.href = 'assets/images/portola/' + slug + '-' + i + '.jpg';
+          extra.setAttribute('data-lightbox', group);
+          extra.setAttribute('data-title', link.getAttribute('data-title'));
+          extra.style.display = 'none';
+          extra.textContent = 'Additional ' + link.getAttribute('data-title') + ' image';
+          link.parentElement.appendChild(extra);
+        }
+      });
+    }());
+  </script>
 </body>
 </html>
