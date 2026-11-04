@@ -24,13 +24,17 @@
           })
         });
 
-        var $grid = $(".grid").isotope({
-          itemSelector: ".all",
-          percentPosition: true,
-          masonry: {
-            columnWidth: ".all",
-            horizontalOrder: true
-          }
+        $(".grid").each(function () {
+          var $grid = $(this);
+          $grid.isotope({
+            itemSelector: ".all",
+            percentPosition: true,
+            layoutMode: $grid.hasClass("curriculum-grid-four") ? "fitRows" : "masonry",
+            masonry: {
+              columnWidth: ".all",
+              horizontalOrder: true
+            }
+          });
         });
 
     const Accordion = {
