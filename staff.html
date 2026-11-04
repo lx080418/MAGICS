@@ -21,6 +21,15 @@
     <link rel="stylesheet" href="assets/css/templatemo-edu-meeting.css">
     <link rel="stylesheet" href="assets/css/owl.css">
     <link rel="stylesheet" href="assets/css/lightbox.css">
+    <style>
+      .staff-grid-five > .templatemo-item-col { flex: 0 0 20%; max-width: 20%; width: 20%; }
+      @media (max-width: 991px) {
+        .staff-grid-five > .templatemo-item-col { flex: 0 0 33.333333%; max-width: 33.333333%; width: 33.333333%; }
+      }
+      @media (max-width: 575px) {
+        .staff-grid-five > .templatemo-item-col { flex: 0 0 50%; max-width: 50%; width: 50%; }
+      }
+    </style>
 <!--
 
 TemplateMo 569 Edu Meeting
@@ -131,7 +140,7 @@ https://templatemo.com/tm-569-edu-meeting
               </div>
             </div>
             <div class="col-lg-12">
-                <div class="row grid" id="staffGrid"></div>
+                <div class="row grid staff-grid-five" id="staffGrid"></div>
                 <script>
                     //put all staff into a array
                     const staff = [
