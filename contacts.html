@@ -9,7 +9,7 @@
     <meta name="author" content="Template Mo">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 
-    <title>M.A.G.I.C.S. - Math Knight</title>
+    <title>M.A.G.I.C.S. - Contact Us</title>
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.png">
 
     <!-- Bootstrap core CSS -->
@@ -21,6 +21,17 @@
     <link rel="stylesheet" href="assets/css/templatemo-edu-meeting.css">
     <link rel="stylesheet" href="assets/css/owl.css">
     <link rel="stylesheet" href="assets/css/lightbox.css">
+    <style>
+      .contact-layout { display: flex; align-items: stretch; gap: 28px; }
+      .contact-people { flex: 1 1 68%; }
+      .contact-people .meeting-item { height: 100%; }
+      .contact-people .thumb img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+      .contact-info-panel { flex: 0 0 30%; background: #303f78; color: #fff; border-radius: 4px; padding: 48px 34px; display: flex; flex-direction: column; justify-content: center; }
+      .contact-info-panel h3, .contact-info-panel p, .contact-info-panel a { color: #fff; }
+      .contact-info-panel h3 { font-size: 40px; letter-spacing: 2px; margin-bottom: 48px; }
+      .contact-info-panel p { font-size: 20px; margin: 14px 0; }
+      @media (max-width: 991px) { .contact-layout { flex-direction: column; } .contact-info-panel { min-height: 280px; } }
+    </style>
 <!--
 
 TemplateMo 569 Edu Meeting
@@ -121,31 +132,28 @@ https://templatemo.com/tm-569-edu-meeting
           <h2>Administration</h2>
         </div>
       </div>
-      <div class="row">
-        <div class="col-lg-6 col-md-6">
-          <div class="meeting-item">
-            <div class="thumb">
-              <img src="assets/images/vincent.jpeg" alt="Vincent Li">
+      <div class="contact-layout">
+        <div class="contact-people">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="meeting-item">
+                <div class="thumb"><img src="assets/images/Vincent.jpg" alt="Vincent Li"></div>
+                <div class="down-content"><h4>Vincent Li</h4><p>Co-Founder/President</p><a href="mailto:vincentli2008@hotmail.com">vincentli2008@hotmail.com</a></div>
+              </div>
             </div>
-            <div class="down-content">
-              <h4>Vincent Li</h4>
-              <p>Co-Founder/President</p>
-              <a href="mailto:vincentli2008@hotmail.com">vincentli2008@hotmail.com</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6 col-md-6">
-          <div class="meeting-item">
-            <div class="thumb">
-              <img src="assets/images/serena.jpeg" alt="Serena Liu">
-            </div>
-            <div class="down-content">
-              <h4>Serena Liu</h4>
-              <p>Co-Founder/President</p>
-              <a href="mailto:serenaliu6280@gmail.com">serenaliu6280@gmail.com</a>
+            <div class="col-lg-6 col-md-6">
+              <div class="meeting-item">
+                <div class="thumb"><img src="assets/images/serena.jpeg" alt="Serena Liu"></div>
+                <div class="down-content"><h4>Serena Liu</h4><p>Co-Founder/President</p><a href="mailto:serenaliu6280@gmail.com">serenaliu6280@gmail.com</a></div>
+              </div>
             </div>
           </div>
         </div>
+        <aside class="contact-info-panel" aria-label="M.A.G.I.C.S. contact information">
+          <h3>M.A.G.I.C.S.</h3>
+          <p>✉ &nbsp; oc math magics@gmail.com</p>
+          <p>☎ &nbsp; +1 9496778674</p>
+        </aside>
       </div>
 
 
