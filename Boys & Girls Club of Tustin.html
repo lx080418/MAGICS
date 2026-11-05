@@ -66,6 +66,13 @@
         'Order of Operation|03/27/2026': ['order-operation-327', 10],
         'Order of Operation|03/16/2026': ['order-operation-316', 10]
       };
+      const unavailable = {
+        'divisibility': [9, 12, 14, 15],
+        'games-math': [10],
+        'magic-order': [10, 11],
+        'odd-even-operation': [3, 6, 9, 14],
+        'order-operation-316': [2, 6, 10]
+      };
       document.querySelectorAll('.tustin-class-grid > a').forEach(function (card) {
         const title = card.querySelector('h4');
         if (!title) return;
@@ -80,6 +87,7 @@
         const image = card.querySelector('img');
         if (image) image.src = card.href;
         for (let i = 2; i <= count; i++) {
+          if ((unavailable[slug] || []).indexOf(i) !== -1) continue;
           const extra = document.createElement('a');
           extra.href = 'assets/images/tustin/' + slug + '-' + i + '.jpg';
           extra.setAttribute('data-lightbox', group);
