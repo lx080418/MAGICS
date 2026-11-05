@@ -53,5 +53,42 @@
     <a href="https://drive.google.com/open?id=1-SFUmM3eIvnUNBHzifGiJ9i63Qlz7bHv&amp;usp=drive_copy" target="_blank" rel="noopener" style="display:block;color:inherit;text-decoration:none;"><div class="meeting-item"><div class="thumb"><img src="assets/images/curriculum/magic-order-operations.jpg" alt="Order of Operation"></div><div class="down-content"><h4>Order of Operation</h4><p>03/16/2026</p></div></div></a>
   </div></div></div></div><div class="footer"><p>Copyright © 2025 MATH Magics | All Rights Reserved.</p></div></section>
   <script src="vendor/jquery/jquery.min.js"></script><script src="vendor/bootstrap/js/bootstrap.min.js"></script><script src="assets/js/isotope.min.js"></script><script src="assets/js/owl-carousel.js"></script><script src="assets/js/lightbox.js"></script><script src="assets/js/tabs.js"></script><script src="assets/js/isotope.js"></script><script src="assets/js/video.js"></script><script src="assets/js/slick-slider.js"></script><script src="assets/js/custom.js"></script>
+  <script>
+    (function () {
+      const galleries = {
+        'Attributes of Odd and Even in Operation': ['odd-even-operation', 14],
+        'Divisibility': ['divisibility', 16],
+        'Find Pattern of Shapes': ['find-pattern', 5],
+        'Games of Math': ['games-math', 10],
+        'Magic Behind Order of Operation': ['magic-order', 14],
+        'Number Properties': ['number-properties', 19],
+        'Odd and Even': ['odd-even', 11],
+        'Order of Operation|03/27/2026': ['order-operation-327', 10],
+        'Order of Operation|03/16/2026': ['order-operation-316', 10]
+      };
+      document.querySelectorAll('.tustin-class-grid > a').forEach(function (card) {
+        const title = card.querySelector('h4');
+        if (!title) return;
+        const date = card.querySelector('p');
+        const config = galleries[title.textContent.trim() + '|' + (date ? date.textContent.trim() : '')] || galleries[title.textContent.trim()];
+        if (!config) return;
+        const slug = config[0], count = config[1], group = 'tustin-' + slug;
+        card.href = 'assets/images/tustin/' + slug + '-1.jpg';
+        card.setAttribute('data-lightbox', group);
+        card.removeAttribute('target');
+        card.removeAttribute('rel');
+        const image = card.querySelector('img');
+        if (image) image.src = card.href;
+        for (let i = 2; i <= count; i++) {
+          const extra = document.createElement('a');
+          extra.href = 'assets/images/tustin/' + slug + '-' + i + '.jpg';
+          extra.setAttribute('data-lightbox', group);
+          extra.setAttribute('data-title', title.textContent.trim());
+          extra.style.display = 'none';
+          card.parentElement.appendChild(extra);
+        }
+      });
+    }());
+  </script>
 </body>
 </html>
