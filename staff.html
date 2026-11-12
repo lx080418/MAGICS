@@ -22,12 +22,12 @@
     <link rel="stylesheet" href="assets/css/owl.css">
     <link rel="stylesheet" href="assets/css/lightbox.css">
     <style>
-      .staff-grid-five > .templatemo-item-col { flex: 0 0 20%; max-width: 20%; width: 20%; }
+      .staff-grid-five > .templatemo-item-col { flex: 0 0 25%; max-width: 25%; width: 25%; }
       @media (max-width: 991px) {
-        .staff-grid-five > .templatemo-item-col { flex: 0 0 33.333333%; max-width: 33.333333%; width: 33.333333%; }
+        .staff-grid-five > .templatemo-item-col { flex: 0 0 50%; max-width: 50%; width: 50%; }
       }
       @media (max-width: 575px) {
-        .staff-grid-five > .templatemo-item-col { flex: 0 0 50%; max-width: 50%; width: 50%; }
+        .staff-grid-five > .templatemo-item-col { flex: 0 0 100%; max-width: 100%; width: 100%; }
       }
     </style>
 <!--
@@ -93,7 +93,7 @@ https://templatemo.com/tm-569-edu-meeting
                                   <li><a href="irvine chinese library.html">Irvine Chinese Library</a></li>
                               </ul>
                           </li>
-                          <li><a href="index.html">Join Us</a></li>
+                          <li><a href="index.html#apply">Join Us</a></li>
                           <li><a href="staff.html" class="active">Staff</a></li> 
                           <li class="has-sub"><a href="javascript:void(0)">Game Development</a>
                             <ul class="sub-menu">
@@ -134,8 +134,8 @@ https://templatemo.com/tm-569-edu-meeting
               <div class="filters">
                 <ul>
                   <li data-filter="*"  class="active">All Staff</li>
-                  <li data-filter=".imp">Volunteers</li>
                   <li data-filter=".soon">Longterm Staff</li>
+                  <li data-filter=".imp">Volunteers</li>
                 </ul>
               </div>
             </div>
@@ -144,103 +144,31 @@ https://templatemo.com/tm-569-edu-meeting
                 <script>
                     //put all staff into a array
                     const staff = [
-                      ["Vincent Li","President/Co-Founder","vincentli2008@hotmail.com","assets/images/Vincent.jpg","soon imp"],
-                      ["Jason Li","Founder","lx080418@gmail.com","assets/images/jason.jpeg","soon imp"],
-                      ["Serena Liu","President/Co-Founder","serenaliu6280@gmail.com","assets/images/serenaliu.jpg","soon imp"],
-                      ["Ellie Ji","Social Media","ellieji8887@gmail.com","assets/images/ellie.jpeg","soon"],
-                      ["Jerry Cai","Web Designer","cjr.greene@gmail.com","assets/images/jerry.jpeg","soon"],
-                      ["Bonnie Zhou","OCSA","bonniezhou0612@gmail.com","assets/images/bonnie.jpeg","soon"],
-                      ["Queenie Xia","Publicist Head","queeniexia08@gmail.com","assets/images/queenie.jpeg","soon"],
-                      ["Quincy Stokes","Game Development","quincy.f.stokes@gmail.com","assets/images/quincy.jpeg","soon"],
-                      ["Michelle Hui","Web Developer","26huimichelle@gmail.com","assets/images/michelle.jpg","soon"],
-                      ["Minseo Lim","Game Development","readbug.lim@gmail.com","assets/images/min.jpg","soon"],
-                      ["Ken Li","Web Developer","kenli201410@gmail.com","assets/images/ken-li.jpg","soon"],
-                      ["Harry Liu","Course Developer","harryliu116@gmail.com","assets/images/harry-liu.jpg","soon"],
-                      ["Ryan Chiang","Course Developer","Ryan.goodjob@gmail.com","assets/images/ryan-chiang.jpg","soon"],
-                    
-                      ["Gehua Wen","Volunteer","wengehua930@gmail.com","assets/images/gehua.jpeg","imp"],
-                      ["Jerry Ye","Web Designer","leeyang2077@gmail.com","assets/images/Jerry_Ye.jpg","soon"],
-                      ["Angelina Lu","Volunteer","angelina.lu2008@gmail.com","assets/images/angie.jpg","imp"],
-                      ["Richard Chen","Volunteer","pokemonsterop@gmail.com","assets/images/richard.jpeg","imp"],
-                      ["Tammy Gao","Chinese Library Liaison","gao18945664566@126.com","assets/images/tammy.jpeg","soon"],
-                      ["Alice Zhang","Chinese Library Liaison","zhangyoutian118@gmail.com","assets/images/alice.jpeg","soon"],
-                      ["Nicolas Kao","Volunteer","nicolas.haoqian.kao@outlook.com","assets/images/nicolas.jpeg","imp"],
-                      ["Siying Chen","Course Developer-Chinese Branch","chensy_1208@qq.com","assets/images/siying.jpeg","soon"],
-                      ["Yunshu Liu","Course Developer-Chinese Branch","c1913_lys0729@qq.com","assets/images/yunshu.jpeg","soon"],
-                      ["Haiyin Guo","Course Developer-Chinese Branch","zhuting@cts-yn.com","assets/images/haiyin.jpeg","soon"],
-                      ["Xintong Yao","Course Developer-Chinese Branch","xixieluohua@163.com","assets/images/xintong.jpeg","soon"],
-                      ["Edon Deng","Course Developer, Instructor","edondeng1230@gmail.com","assets/images/edondeng.jpg","soon"],
-                    
-                      ["Cindy Zhu","Vice President","zhuxiwen010@gmail.com","assets/images/cindyzhu.jpg","soon"],
-                      ["Claire Xu","Vice President","xuclaire415@gmail.com","assets/images/clairexu.jpg","soon"],
-                      ["Jiaqi He","Vice President","lovesh.alex2024@gmail.com","assets/images/jiaqihe.jpg","soon"],
-                      ["Zihao Niu","Course Developer","K06160522@gmail.com","assets/images/kevinniu.jpg","soon"],
-                      ["Tingjia Shang","Publicist","shangtingjia@gmail.com","assets/images/tingjiashang.jpg","soon"],
-                      ["Menglu Li (Odette)","Course Developer","limenglu2012@gmail.com","assets/images/mengluli.jpg","soon"],
-                      ["Brandon Zhou","Web Designer","zhouchengyi923@gmail.com","assets/images/brandonzhou.jpg","soon"],
-                      ["Haoyi Zhang","Course Developer","haoyi.zhy@gmail.com","assets/images/haoyizhang.jpg","soon"],
-                      ["Yi Jin","Course Developer-Chinese Branch","jinyiliulang@gmail.com","assets/images/yijin.jpg","soon"],
-                      ["Kazusa Kodama","Course Developer","X","assets/images/kazusakodama.jpg","soon"],
-                      ["Zhuoyan Wang","Course Developer","wangzhuoyan1224@gmail.com","assets/images/zhuoyanwang.jpg","soon"],
-                      ["Yeyu (Owen) Wang","Course Developer","owenwang9562@gmail.com","assets/images/owenwang.jpg","soon"],
-                      ["Alan Yang","Instructor","alanyang0528@gmail.com","assets/images/alanyang.jpg","soon"],
-                      ["Suri Zhou","Course Developer","stf0522@gmail.com","assets/images/surizhou.jpg","soon"],
-                    
-                      ["Dorina Jiang","Course Developer","dorinajiang@gmail.com","assets/images/dorinajiang.jpg","soon"],
-                      ["Zihao Yan","Course Developer","yan6177759028@gmail.com","assets/images/lucasyan.jpg","soon"],
-                      ["Sabrina Chiang","Course Developer","sabrina07171@gmail.com","assets/images/sabrinachiang.jpg","soon"],
-                      ["Jingyi Ye","Volunteer","julieye74@gmail.com","assets/images/julieye.jpg","imp"],
-                      ["Xiaohan Chu","Volunteer","xiaohanchu1211@gmail.com","assets/images/xiaohanchu.jpg","imp"],
-                      ["Tina Dong","Course Development","dongyiyating@gmail.com","assets/images/tinadong.jpg","soon"],
-                      ["Derek Zhang","Volunteer","zhangdexuan2010@gmail.com","assets/images/derekzhang.jpg","imp"],
-                      ["Francis (Zihan) Xu","Course Development","francisxu28@gmail.com","assets/images/francisxu.jpg","soon"],
-                      ["Haiyun Rui","Volunteer","jennirui0716@gmail.com","assets/images/haiyunrui.jpg","imp"],
-                      ["Chen Ding","Volunteer","dingchen090603@gmail.com","assets/images/chending.jpg","imp"],
-                      ["Yiwen Zheng","Volunteer","yiwenzheng534@gmail.com","assets/images/yiwenzheng.jpg","imp"],
-                      ["Bowen Jiang","Volunteer","X","assets/images/bowenjiang.jpg","imp"],
-                      ["Leah Yu","Volunteer","yuleah0421@gmail.com","assets/images/leahyu.jpg","imp"],
-                      ["Amy Liang","Volunteer","lwenjia0731@gmail.com","assets/images/amyliang.jpg","imp"],
-                      ["Anyan Ning","Volunteer","ninganyan@outlook.com","assets/images/anyanning.jpg","imp"],
-                      ["Siya Ning","Volunteer","nsy0606_09@qq.com","assets/images/siyaning.jpg","imp"],
-                      ["Anna Cao","Volunteer","acao2786208@gmail.com","assets/images/annacao.jpg","imp"],
-
-                      ["Kazusa Kodama","Course Developer","X","assets/images/kazusakodama.jpg","imp"],
-                      ["Michelle Hui","Web Developer","26huimichelle@gmail.com","assets/images/michelle.jpg","imp"],
-                      ["Cindy Zhu","Vice President","zhuxiwen010@gmail.com","assets/images/cindyzhu.jpg","imp"],
-                      ["Xintong Yao","Course Developer-Chinese Branch","xixieluohua@163.com","assets/images/xintong.jpeg","imp"],
-                      ["Quincy Stokes","Game Development","quincy.f.stokes@gmail.com","assets/images/quincy.jpeg","imp"],
-                      ["Dorina Jiang","Course Developer","dorinajiang@gmail.com","assets/images/dorinajiang.jpg","imp"],
-                      ["Jerry Ye","Web Designer","leeyang2077@gmail.com","assets/images/Jerry_Ye.jpg","imp"],
-                      ["Alan Yang","Instructor","alanyang0528@gmail.com","assets/images/alanyang.jpg","imp"],
-                      ["Siying Chen","Course Developer-Chinese Branch","chensy_1208@qq.com","assets/images/siying.jpeg","imp"],
-                      ["Tingjia Shang","Publicist","shangtingjia@gmail.com","assets/images/tingjiashang.jpg","imp"],
-                      ["Ken Li","Web Developer","kenli201410@gmail.com","assets/images/ken-li.jpg","imp"],
-                      ["Sabrina Chiang","Course Developer","sabrina07171@gmail.com","assets/images/sabrinachiang.jpg","imp"],
-                      ["Bonnie Zhou","OCSA","bonniezhou0612@gmail.com","assets/images/bonnie.jpeg","imp"],
-                      ["Yi Jin","Course Developer-Chinese Branch","jinyiliulang@gmail.com","assets/images/yijin.jpg","imp"],
-                      ["Claire Xu","Vice President","xuclaire415@gmail.com","assets/images/clairexu.jpg","imp"],
-                      ["Harry Liu","Course Developer","harryliu116@gmail.com","assets/images/harry-liu.jpg","imp"],
-                      ["Francis (Zihan) Xu","Course Development","francisxu28@gmail.com","assets/images/francisxu.jpg","imp"],
-                      ["Queenie Xia","Publicist Head","queeniexia08@gmail.com","assets/images/queenie.jpeg","imp"],
-                      ["Haoyi Zhang","Course Developer","haoyi.zhy@gmail.com","assets/images/haoyizhang.jpg","imp"],
-                      ["Tammy Gao","Chinese Library Liaison","gao18945664566@126.com","assets/images/tammy.jpeg","imp"],
-                      ["Zihao Yan","Course Developer","yan6177759028@gmail.com","assets/images/lucasyan.jpg","imp"],
-                      ["Ellie Ji","Social Media","ellieji8887@gmail.com","assets/images/ellie.jpeg","imp"],
-                      ["Yeyu (Owen) Wang","Course Developer","owenwang9562@gmail.com","assets/images/owenwang.jpg","imp"],
-                      ["Haiyin Guo","Course Developer-Chinese Branch","zhuting@cts-yn.com","assets/images/haiyin.jpeg","imp"],
-                      ["Brandon Zhou","Web Designer","zhouchengyi923@gmail.com","assets/images/brandonzhou.jpg","imp"],
-                      ["Minseo Lim","Game Development","readbug.lim@gmail.com","assets/images/min.jpg","imp"],
-                      ["Jiaqi He","Vice President","lovesh.alex2024@gmail.com","assets/images/jiaqihe.jpg","imp"],
-                      ["Tina Dong","Course Development","dongyiyating@gmail.com","assets/images/tinadong.jpg","imp"],
-                      ["Ryan Chiang","Course Developer","Ryan.goodjob@gmail.com","assets/images/ryan-chiang.jpg","imp"],
-                      ["Yunshu Liu","Course Developer-Chinese Branch","c1913_lys0729@qq.com","assets/images/yunshu.jpeg","imp"],
-                      ["Zhuoyan Wang","Course Developer","wangzhuoyan1224@gmail.com","assets/images/zhuoyanwang.jpg","imp"],
-                      ["Jerry Cai","Web Designer","cjr.greene@gmail.com","assets/images/jerry.jpeg","imp"],
-                      ["Suri Zhou","Course Developer","stf0522@gmail.com","assets/images/surizhou.jpg","imp"],
-                      ["Alice Zhang","Chinese Library Liaison","zhangyoutian118@gmail.com","assets/images/alice.jpeg","imp"],
-                      ["Zihao Niu","Course Developer","K06160522@gmail.com","assets/images/kevinniu.jpg","imp"],
-                      ["Edon Deng","Course Developer, Instructor","edondeng1230@gmail.com","assets/images/edondeng.jpg","imp"],
-                      ["Menglu Li (Odette)","Course Developer","limenglu2012@gmail.com","assets/images/mengluli.jpg","imp"]
+                        ["Vincent Li","Co-Founder/President","vincentli2008@hotmail.com","assets/images/Vincent.jpg","soon"],
+                        ["Jason Li","Founder","lx080418@gmail.com","assets/images/jason.jpeg","soon"],
+                        ["Serena Liu","Co-Founder/President","serenaliu6280@gmail.com","assets/images/serena.jpeg","soon"],
+                        ["Ellie Ji","Social Media","ellieji8887@gmail.com","assets/images/ellie.jpeg","soon"],
+                        ["Jerry Cai","Web Designer","cjr.greene@gmail.com","assets/images/jerry.jpeg","soon"],
+                        ["Bonnie Zhou","OCSA","bonniezhou0612@gmail.com","assets/images/bonnie.jpeg","soon"],
+                        ["Queenie Xia","Publicity","queeniexia08@gmail.com","assets/images/queenie.jpeg","soon"],
+                        ["Quincy Stokes","Game Development","quincy.f.stokes@gmail.com","assets/images/quincy.jpeg","soon"],
+                        ["Michelle Hui","Web Developer","26huimichelle@gmail.com","assets/images/michelle.jpg","soon"],
+                        ["Minseo Lim","Game Development","readbug.lim@gmail.com","assets/images/min.jpg","soon"],
+                        ["Ken Li","Web Developer","kenli201410@gmail.com","assets/images/ken-li.jpg","soon"],
+                        ["Harry Liu","Course Developer","harryliu116@gmail.com","assets/images/harry-liu.jpg","soon"],
+                        ["Ryan Chiang","Course Developer","Ryan.goodjob@gmail.com","assets/images/ryan-chiang.jpg","soon"],
+                        ["Gehua Wen","Volunteer","wengehua930@gmail.com","assets/images/gehua.jpeg","imp"],
+                        ["Jerry Ye","Web Designer","leeyang2077@gmail.com","assets/images/Jerry_Ye.jpg","imp"],
+                        ["Angelina Lu","Volunteer","angelina.lu2008@gmail.com","assets/images/angie.jpg","imp"],
+                        ["Richard Chen","Volunteer","pokemonsterop@gmail.com","assets/images/richard.jpeg","imp"],
+                        ["Tammy Gao","Volunteer","gao18945664566@126.com","assets/images/tammy.jpeg","imp"],
+                        ["Alice Zhang","Volunteer","zhangyoutian118@gmail.com","assets/images/alice.jpeg","imp"],
+                        ["Nicolas Kao","Volunteer","nicolas.haoqian.kao@outlook.com","assets/images/nicolas.jpeg","imp"],
+                        ["Siying Chen","Volunteer","chensy_1208@qq.com","assets/images/siying.jpeg","imp"],
+                        ["Yunshu Liu","Volunteer","c1913_lys0729@qq.com","assets/images/yunshu.jpeg","imp"],
+                        ["Haiyin Guo","Volunteer","zhuting@cts-yn.com","assets/images/haiyin.jpeg","imp"],
+                        ["Xintong Yao","Volunteer","xixieluohua@163.com","assets/images/xintong.jpeg","imp"],
+                        ["Edon Deng","Volunteer","edondeng1230@gmail.com","assets/images/edon.jpeg","imp"]
                     ];
                     //grid is refer to a container who's id is "staffGrid"
                     const grid = document.getElementById("staffGrid");
